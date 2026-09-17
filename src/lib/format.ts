@@ -9,12 +9,13 @@ export function formatPrice(cents: number): string {
 export function formatDateLong(date: string): string {
   const [y, m, d] = date.split("-").map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d));
-  return new Intl.DateTimeFormat("es-AR", {
+  const formatted = new Intl.DateTimeFormat("es-AR", {
     weekday: "long",
     day: "numeric",
     month: "long",
     timeZone: "UTC",
   }).format(dt);
+  return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 }
 
 export function formatDuration(minutes: number): string {

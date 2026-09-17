@@ -47,14 +47,28 @@ ADMIN_EMAIL=vos@ejemplo.com ADMIN_PASSWORD=algoSeguro123 npm run seed
 - `src/lib/availability.ts` — cálculo de horarios disponibles según el
   horario semanal, los bloqueos y los turnos ya reservados.
 
+## Notificaciones
+
+- **Email**: al reservar (a la clienta y a todos los admins) y al confirmar/
+  cancelar un turno (a la clienta), si tiene email cargado. Usa
+  [Resend](https://resend.com); sin `RESEND_API_KEY` configurada, la app
+  funciona igual pero solo deja un log en consola en vez de mandar el mail.
+- **WhatsApp**: no es automático (no requiere ninguna cuenta ni costo). En
+  la pantalla de confirmación de la reserva aparece un botón "Avisar por
+  WhatsApp" que abre un chat con el negocio con el mensaje ya escrito. En el
+  panel admin, cada turno tiene un botón "WhatsApp" que abre un chat con la
+  clienta, también con el mensaje precargado.
+
 ## Variables de entorno
 
 Ver `.env.example`. `AUTH_SECRET` es requerido por NextAuth; generá uno
 propio para producción (por ejemplo con `openssl rand -base64 32`).
+`RESEND_API_KEY` y `NEXT_PUBLIC_BUSINESS_WHATSAPP_NUMBER` son opcionales
+(ver sección de Notificaciones).
 
 ## Próximos pasos posibles
 
-- Notificaciones por WhatsApp/email al confirmar o recordar un turno.
-- Recordatorios automáticos.
+- WhatsApp 100% automático (requiere WhatsApp Business API o Twilio).
+- Recordatorios automáticos el día previo al turno.
 - Métricas de ingresos por período.
 - Migrar `data/db.json` a una base de datos real si el uso crece.

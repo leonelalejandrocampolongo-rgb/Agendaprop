@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { mutateDb, newId } from "@/lib/db";
+import { getDb, mutateDb, newId } from "@/lib/db";
 import { minutesToTime, timeToMinutes } from "@/lib/availability";
 import { badRequest, notFound } from "@/lib/api-helpers";
+import { notifyNewAppointment } from "@/lib/notifications";
 
 const bodySchema = z.object({
   serviceId: z.string().min(1),
@@ -69,6 +70,15 @@ export async function POST(request: NextRequest) {
       db.appointments.push(newAppointment);
       return newAppointment;
     });
+
+    const db = await getDb();
+    const service = db.services.find((s) => s.id === appointment.serviceId);
+    if (service) {
+      const adminEmails = db.admins.map((a) => a.email);
+      notifyNewAppointment(appointment, service, adminEmails).catch((err) =>
+        console.error("[notifications] error al avisar nuevo turno", err),
+      );
+    }
 
     return NextResponse.json({ appointment }, { status: 201 });
   } catch (err) {

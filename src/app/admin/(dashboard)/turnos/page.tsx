@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { StatusBadge } from "@/components/status-badge";
-import { formatPrice } from "@/lib/format";
+import { formatDateLong, formatPrice } from "@/lib/format";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 type Appointment = {
   id: string;
@@ -140,6 +141,14 @@ export default function TurnosPage() {
                   <option value="COMPLETED">Completado</option>
                   <option value="CANCELLED">Cancelado</option>
                 </select>
+                <a
+                  href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-full border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 hover:bg-emerald-50"
+                >
+                  WhatsApp
+                </a>
               </div>
             </li>
           ))}
@@ -147,4 +156,14 @@ export default function TurnosPage() {
       )}
     </div>
   );
+}
+
+function whatsappMessageFor(a: Appointment): string {
+  const when = `${formatDateLong(a.date)} a las ${a.startTime} hs`;
+  const service = a.service?.name ?? "tu turno";
+
+  if (a.status === "CANCELLED") {
+    return `Hola ${a.clientName}! Te escribo porque tu turno de ${service} del ${when} quedó cancelado. Si querés reprogramarlo, contame.`;
+  }
+  return `Hola ${a.clientName}! Te confirmo tu turno de ${service} el ${when}. ¡Te esperamos!`;
 }

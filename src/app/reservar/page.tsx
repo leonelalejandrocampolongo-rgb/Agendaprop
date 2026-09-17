@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { formatDateLong, formatDuration, formatPrice } from "@/lib/format";
+import { BUSINESS_WHATSAPP_NUMBER, buildWhatsAppLink } from "@/lib/whatsapp";
 
 type Service = {
   id: string;
@@ -127,19 +128,36 @@ export default function ReservarPage() {
             Te esperamos para tu turno de{" "}
             <strong>{selectedService.name}</strong>
           </p>
-          <p className="mt-1 text-stone-600 capitalize">
+          <p className="mt-1 text-stone-600">
             {formatDateLong(date)}, {selectedSlot.start} hs
           </p>
           <p className="mt-4 text-sm text-stone-500">
             Te vamos a confirmar el turno a la brevedad. Si necesitás
             cancelar o reprogramar, contactanos.
           </p>
-          <Link
-            href="/"
-            className="inline-block mt-6 rounded-full bg-rose-700 px-6 py-2.5 text-white text-sm font-medium hover:bg-rose-800"
-          >
-            Volver al inicio
-          </Link>
+
+          {BUSINESS_WHATSAPP_NUMBER && (
+            <a
+              href={buildWhatsAppLink(
+                BUSINESS_WHATSAPP_NUMBER,
+                `Hola! Soy ${clientName || "una clienta"} y acabo de reservar un turno de ${selectedService.name} para el ${formatDateLong(date)} a las ${selectedSlot.start} hs. ¡Gracias!`,
+              )}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-6 rounded-full bg-emerald-600 px-6 py-2.5 text-white text-sm font-medium hover:bg-emerald-700"
+            >
+              Avisar por WhatsApp
+            </a>
+          )}
+
+          <div>
+            <Link
+              href="/"
+              className="inline-block mt-4 text-sm text-rose-700 hover:underline"
+            >
+              Volver al inicio
+            </Link>
+          </div>
         </div>
       </main>
     );
