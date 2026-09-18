@@ -30,42 +30,44 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-4xl px-6 py-14">
-        <h2 className="text-xl font-semibold text-stone-900 mb-6">
-          Nuestros servicios
-        </h2>
+      <section className="bg-amber-50">
+        <div className="mx-auto max-w-4xl px-6 py-14">
+          <h2 className="text-xl font-semibold text-stone-900 mb-6">
+            Nuestros servicios
+          </h2>
 
-        {services.length === 0 ? (
-          <p className="text-stone-500">
-            Todavía no hay servicios cargados.
-          </p>
-        ) : (
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {services.map((service) => (
-              <li
-                key={service.id}
-                className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
-              >
-                <h3 className="font-medium text-stone-900">
-                  {service.name}
-                </h3>
-                {service.description && (
-                  <p className="mt-1 text-sm text-stone-600">
-                    {service.description}
-                  </p>
-                )}
-                <div className="mt-3 flex items-center justify-between text-sm">
-                  <span className="text-stone-500">
-                    {formatDuration(service.durationMinutes)}
-                  </span>
-                  <span className="font-medium text-amber-800">
-                    {formatPrice(service.priceCents)}
-                  </span>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
+          {services.length === 0 ? (
+            <p className="text-stone-500">
+              Todavía no hay servicios cargados.
+            </p>
+          ) : (
+            <ul className="grid gap-4 sm:grid-cols-2">
+              {services.map((service) => (
+                <li
+                  key={service.id}
+                  className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                >
+                  <h3 className="font-medium text-stone-900">
+                    {service.name}
+                  </h3>
+                  {service.description && (
+                    <p className="mt-1 text-sm text-stone-600">
+                      {service.description}
+                    </p>
+                  )}
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <span className="text-stone-500">
+                      {formatDuration(service.durationMinutes)}
+                    </span>
+                    <span className="font-medium text-amber-800">
+                      {formatPrice(service.priceCents)}
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
     </main>
   );
