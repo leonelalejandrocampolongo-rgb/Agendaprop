@@ -6,7 +6,7 @@ export function LogoutButton() {
   return (
     <button
       onClick={() => signOut({ callbackUrl: "/admin/login" })}
-      className="text-sm text-stone-500 hover:text-amber-700"
+      className="text-sm text-stone-500 hover:text-amber-800"
     >
       Cerrar sesión
     </button>

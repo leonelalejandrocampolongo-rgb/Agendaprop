@@ -189,7 +189,7 @@ export default function ServiciosPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-amber-700 px-5 py-2 text-sm font-medium text-white hover:bg-amber-800 disabled:opacity-60"
+            className="rounded-full bg-amber-800 px-5 py-2 text-sm font-medium text-white hover:bg-amber-900 disabled:opacity-60"
           >
             {saving ? "Guardando…" : editingId ? "Guardar cambios" : "Crear servicio"}
           </button>
@@ -231,13 +231,13 @@ export default function ServiciosPage() {
               <div className="flex gap-2 text-sm">
                 <button
                   onClick={() => startEdit(service)}
-                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-300"
+                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-400"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => toggleActive(service)}
-                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-300"
+                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-400"
                 >
                   {service.active ? "Desactivar" : "Activar"}
                 </button>

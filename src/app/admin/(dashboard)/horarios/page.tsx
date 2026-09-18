@@ -136,12 +136,12 @@ export default function HorariosPage() {
                     weeklyByDay.get(idx)!.map((range) => (
                       <span
                         key={range.id}
-                        className="inline-flex items-center gap-2 rounded-full bg-amber-50 text-amber-700 text-sm px-3 py-1"
+                        className="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-800 text-sm px-3 py-1"
                       >
                         {range.startTime}–{range.endTime}
                         <button
                           onClick={() => removeWeeklyRange(range.id)}
-                          className="text-amber-400 hover:text-amber-700"
+                          className="text-amber-500 hover:text-amber-800"
                           aria-label="Eliminar horario"
                         >
                           ×
@@ -193,7 +193,7 @@ export default function HorariosPage() {
           </div>
           <button
             type="submit"
-            className="rounded-full bg-amber-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-800"
+            className="rounded-full bg-amber-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-900"
           >
             Agregar
           </button>
@@ -308,7 +308,7 @@ export default function HorariosPage() {
           {blockError && <p className="text-sm text-red-600">{blockError}</p>}
           <button
             type="submit"
-            className="rounded-full bg-amber-700 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-800"
+            className="rounded-full bg-amber-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-900"
           >
             Bloquear
           </button>

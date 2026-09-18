@@ -29,7 +29,7 @@ export default async function AdminDashboardPage() {
       <section>
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-medium text-stone-900">Turnos de hoy</h2>
-          <Link href="/admin/turnos" className="text-sm text-amber-700 hover:underline">
+          <Link href="/admin/turnos" className="text-sm text-amber-800 hover:underline">
             Ver todos →
           </Link>
         </div>
