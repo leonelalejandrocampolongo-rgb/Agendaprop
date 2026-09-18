@@ -120,7 +120,7 @@ export default function ReservarPage() {
   if (confirmed && selectedService && selectedSlot) {
     return (
       <main className="flex-1 mx-auto max-w-lg px-6 py-16 text-center">
-        <div className="rounded-2xl border border-rose-100 bg-rose-50 p-8">
+        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-8">
           <h1 className="text-2xl font-semibold text-stone-900">
             ¡Turno reservado!
           </h1>
@@ -153,7 +153,7 @@ export default function ReservarPage() {
           <div>
             <Link
               href="/"
-              className="inline-block mt-4 text-sm text-rose-700 hover:underline"
+              className="inline-block mt-4 text-sm text-amber-700 hover:underline"
             >
               Volver al inicio
             </Link>
@@ -165,7 +165,7 @@ export default function ReservarPage() {
 
   return (
     <main className="flex-1 mx-auto max-w-2xl w-full px-6 py-12">
-      <Link href="/" className="text-sm text-rose-700 hover:underline">
+      <Link href="/" className="text-sm text-amber-700 hover:underline">
         ← Volver
       </Link>
       <h1 className="mt-4 text-2xl font-semibold text-stone-900">
@@ -190,8 +190,8 @@ export default function ReservarPage() {
                   key={service.id}
                   className={`cursor-pointer rounded-xl border p-4 transition-colors ${
                     selectedServiceId === service.id
-                      ? "border-rose-600 bg-rose-50"
-                      : "border-stone-200 bg-white hover:border-rose-300"
+                      ? "border-amber-600 bg-amber-50"
+                      : "border-stone-200 bg-white hover:border-amber-300"
                   }`}
                 >
                   <input
@@ -246,8 +246,8 @@ export default function ReservarPage() {
                     onClick={() => setSelectedSlot(slot)}
                     className={`rounded-full border px-4 py-2 text-sm transition-colors ${
                       selectedSlot?.start === slot.start
-                        ? "border-rose-600 bg-rose-700 text-white"
-                        : "border-stone-300 bg-white text-stone-700 hover:border-rose-300"
+                        ? "border-amber-600 bg-amber-700 text-white"
+                        : "border-stone-300 bg-white text-stone-700 hover:border-amber-300"
                     }`}
                   >
                     {slot.start}
@@ -319,7 +319,7 @@ export default function ReservarPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-rose-700 px-6 py-3 text-white font-medium hover:bg-rose-800 disabled:opacity-60"
+              className="w-full rounded-full bg-amber-700 px-6 py-3 text-white font-medium hover:bg-amber-800 disabled:opacity-60"
             >
               {submitting ? "Reservando…" : "Confirmar turno"}
             </button>

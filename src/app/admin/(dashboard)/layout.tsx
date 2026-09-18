@@ -33,7 +33,7 @@ export default async function DashboardLayout({
             <Link
               key={item.href}
               href={item.href}
-              className="py-3 border-b-2 border-transparent text-stone-600 hover:text-rose-700 hover:border-rose-700"
+              className="py-3 border-b-2 border-transparent text-stone-600 hover:text-amber-700 hover:border-amber-700"
             >
               {item.label}
             </Link>

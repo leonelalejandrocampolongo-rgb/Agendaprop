@@ -12,7 +12,7 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <section className="bg-rose-50 border-b border-rose-100">
+      <section className="bg-amber-50 border-b border-amber-100">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
           <h1 className="text-3xl sm:text-4xl font-semibold text-stone-900">
             Bienestar Mariana Cabello
@@ -23,7 +23,7 @@ export default async function HomePage() {
           </p>
           <Link
             href="/reservar"
-            className="inline-block mt-8 rounded-full bg-rose-700 px-8 py-3 text-white font-medium hover:bg-rose-800 transition-colors"
+            className="inline-block mt-8 rounded-full bg-amber-700 px-8 py-3 text-white font-medium hover:bg-amber-800 transition-colors"
           >
             Reservar turno
           </Link>
@@ -58,7 +58,7 @@ export default async function HomePage() {
                   <span className="text-stone-500">
                     {formatDuration(service.durationMinutes)}
                   </span>
-                  <span className="font-medium text-rose-700">
+                  <span className="font-medium text-amber-700">
                     {formatPrice(service.priceCents)}
                   </span>
                 </div>

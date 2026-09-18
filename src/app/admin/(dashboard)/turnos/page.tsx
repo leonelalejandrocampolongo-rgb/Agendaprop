@@ -92,7 +92,7 @@ export default function TurnosPage() {
         {dateFilter && (
           <button
             onClick={() => setDateFilter("")}
-            className="text-sm text-rose-700 hover:underline"
+            className="text-sm text-amber-700 hover:underline"
           >
             Limpiar fecha
           </button>
