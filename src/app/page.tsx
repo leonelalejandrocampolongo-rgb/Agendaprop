@@ -12,18 +12,18 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <section className="bg-amber-100 border-b border-amber-200">
+      <section className="bg-champagne border-b border-dustypink/30">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-stone-900">
+          <h1 className="text-3xl sm:text-4xl font-semibold text-cocoa">
             Bienestar Mariana Cabello
           </h1>
-          <p className="mt-4 text-stone-600 max-w-xl mx-auto">
+          <p className="mt-4 text-taupe max-w-xl mx-auto">
             Reservá tu turno de masajes, tratamientos faciales y estética
             online, en pocos pasos y sin llamadas.
           </p>
           <Link
             href="/reservar"
-            className="inline-block mt-8 rounded-full bg-amber-800 px-8 py-3 text-white font-medium hover:bg-amber-900 transition-colors"
+            className="inline-block mt-8 rounded-full bg-gold px-8 py-3 text-white font-medium hover:bg-gold-dark transition-colors"
           >
             Reservar turno
           </Link>
@@ -32,12 +32,12 @@ export default async function HomePage() {
 
       <section>
         <div className="mx-auto max-w-4xl px-6 py-14">
-          <h2 className="text-xl font-semibold text-stone-900 mb-6">
+          <h2 className="text-xl font-semibold text-cocoa mb-6">
             Nuestros servicios
           </h2>
 
           {services.length === 0 ? (
-            <p className="text-stone-500">
+            <p className="text-taupe">
               Todavía no hay servicios cargados.
             </p>
           ) : (
@@ -45,21 +45,21 @@ export default async function HomePage() {
               {services.map((service) => (
                 <li
                   key={service.id}
-                  className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm"
+                  className="rounded-xl border border-nude bg-white p-5 shadow-sm"
                 >
-                  <h3 className="font-medium text-stone-900">
+                  <h3 className="font-medium text-cocoa">
                     {service.name}
                   </h3>
                   {service.description && (
-                    <p className="mt-1 text-sm text-stone-600">
+                    <p className="mt-1 text-sm text-taupe">
                       {service.description}
                     </p>
                   )}
                   <div className="mt-3 flex items-center justify-between text-sm">
-                    <span className="text-stone-500">
+                    <span className="text-taupe">
                       {formatDuration(service.durationMinutes)}
                     </span>
-                    <span className="font-medium text-amber-800">
+                    <span className="font-medium text-gold-dark">
                       {formatPrice(service.priceCents)}
                     </span>
                   </div>

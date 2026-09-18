@@ -62,25 +62,25 @@ export default function TurnosPage() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-stone-900">Turnos</h1>
+        <h1 className="text-xl font-semibold text-cocoa">Turnos</h1>
       </div>
 
       <div className="flex flex-wrap gap-3 items-end">
         <div>
-          <label className="block text-xs text-stone-500 mb-1">Fecha</label>
+          <label className="block text-xs text-taupe mb-1">Fecha</label>
           <input
             type="date"
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
-            className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+            className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
           />
         </div>
         <div>
-          <label className="block text-xs text-stone-500 mb-1">Estado</label>
+          <label className="block text-xs text-taupe mb-1">Estado</label>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+            className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
           >
             {STATUS_FILTERS.map((f) => (
               <option key={f.value} value={f.value}>
@@ -92,7 +92,7 @@ export default function TurnosPage() {
         {dateFilter && (
           <button
             onClick={() => setDateFilter("")}
-            className="text-sm text-amber-800 hover:underline"
+            className="text-sm text-gold-dark hover:underline"
           >
             Limpiar fecha
           </button>
@@ -100,27 +100,27 @@ export default function TurnosPage() {
       </div>
 
       {appointments === null ? (
-        <p className="text-stone-500 text-sm">Cargando…</p>
+        <p className="text-taupe text-sm">Cargando…</p>
       ) : appointments.length === 0 ? (
-        <p className="text-stone-500 text-sm">No hay turnos para mostrar.</p>
+        <p className="text-taupe text-sm">No hay turnos para mostrar.</p>
       ) : (
-        <ul className="divide-y divide-stone-200 rounded-xl border border-stone-200 bg-white">
+        <ul className="divide-y divide-nude rounded-xl border border-nude bg-white">
           {appointments.map((a) => (
             <li key={a.id} className="px-4 py-4 flex flex-wrap items-center gap-4 justify-between">
               <div>
-                <p className="font-medium text-stone-900">
+                <p className="font-medium text-cocoa">
                   {a.date} · {a.startTime}–{a.endTime}
                 </p>
-                <p className="text-sm text-stone-600">
+                <p className="text-sm text-taupe">
                   {a.service?.name ?? "Servicio eliminado"}
                   {a.service && ` · ${formatPrice(a.service.priceCents)}`}
                 </p>
-                <p className="text-sm text-stone-500 mt-0.5">
+                <p className="text-sm text-taupe mt-0.5">
                   {a.clientName} · {a.clientPhone}
                   {a.clientEmail && ` · ${a.clientEmail}`}
                 </p>
                 {a.notes && (
-                  <p className="text-sm text-stone-400 mt-0.5 italic">
+                  <p className="text-sm text-taupe mt-0.5 italic">
                     &ldquo;{a.notes}&rdquo;
                   </p>
                 )}
@@ -134,7 +134,7 @@ export default function TurnosPage() {
                   onChange={(e) =>
                     updateStatus(a.id, e.target.value as Appointment["status"])
                   }
-                  className="rounded-lg border border-stone-300 px-2 py-1.5 text-sm disabled:opacity-50"
+                  className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm disabled:opacity-50"
                 >
                   <option value="PENDING">Pendiente</option>
                   <option value="CONFIRMED">Confirmado</option>

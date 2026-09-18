@@ -120,18 +120,18 @@ export default function ReservarPage() {
   if (confirmed && selectedService && selectedSlot) {
     return (
       <main className="flex-1 mx-auto max-w-lg px-6 py-16 text-center">
-        <div className="rounded-2xl border border-amber-200 bg-amber-100 p-8">
-          <h1 className="text-2xl font-semibold text-stone-900">
+        <div className="rounded-2xl border border-dustypink/40 bg-champagne p-8">
+          <h1 className="text-2xl font-semibold text-cocoa">
             ¡Turno reservado!
           </h1>
-          <p className="mt-3 text-stone-600">
+          <p className="mt-3 text-taupe">
             Te esperamos para tu turno de{" "}
             <strong>{selectedService.name}</strong>
           </p>
-          <p className="mt-1 text-stone-600">
+          <p className="mt-1 text-taupe">
             {formatDateLong(date)}, {selectedSlot.start} hs
           </p>
-          <p className="mt-4 text-sm text-stone-500">
+          <p className="mt-4 text-sm text-taupe">
             Te vamos a confirmar el turno a la brevedad. Si necesitás
             cancelar o reprogramar, contactanos.
           </p>
@@ -153,7 +153,7 @@ export default function ReservarPage() {
           <div>
             <Link
               href="/"
-              className="inline-block mt-4 text-sm text-amber-800 hover:underline"
+              className="inline-block mt-4 text-sm text-gold-dark hover:underline"
             >
               Volver al inicio
             </Link>
@@ -165,22 +165,22 @@ export default function ReservarPage() {
 
   return (
     <main className="flex-1 mx-auto max-w-2xl w-full px-6 py-12">
-      <Link href="/" className="text-sm text-amber-800 hover:underline">
+      <Link href="/" className="text-sm text-gold-dark hover:underline">
         ← Volver
       </Link>
-      <h1 className="mt-4 text-2xl font-semibold text-stone-900">
+      <h1 className="mt-4 text-2xl font-semibold text-cocoa">
         Reservar turno
       </h1>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-8">
         <fieldset>
-          <legend className="font-medium text-stone-900 mb-3">
+          <legend className="font-medium text-cocoa mb-3">
             1. Elegí un servicio
           </legend>
           {services === null ? (
-            <p className="text-stone-500 text-sm">Cargando servicios…</p>
+            <p className="text-taupe text-sm">Cargando servicios…</p>
           ) : services.length === 0 ? (
-            <p className="text-stone-500 text-sm">
+            <p className="text-taupe text-sm">
               No hay servicios disponibles por el momento.
             </p>
           ) : (
@@ -190,8 +190,8 @@ export default function ReservarPage() {
                   key={service.id}
                   className={`cursor-pointer rounded-xl border p-4 transition-colors ${
                     selectedServiceId === service.id
-                      ? "border-amber-700 bg-amber-100"
-                      : "border-stone-200 bg-white hover:border-amber-400"
+                      ? "border-gold bg-nude"
+                      : "border-nude bg-white hover:border-gold-light"
                   }`}
                 >
                   <input
@@ -201,10 +201,10 @@ export default function ReservarPage() {
                     checked={selectedServiceId === service.id}
                     onChange={() => setSelectedServiceId(service.id)}
                   />
-                  <p className="font-medium text-stone-900">
+                  <p className="font-medium text-cocoa">
                     {service.name}
                   </p>
-                  <p className="mt-1 text-sm text-stone-500">
+                  <p className="mt-1 text-sm text-taupe">
                     {formatDuration(service.durationMinutes)} ·{" "}
                     {formatPrice(service.priceCents)}
                   </p>
@@ -216,7 +216,7 @@ export default function ReservarPage() {
 
         {selectedServiceId && (
           <fieldset>
-            <legend className="font-medium text-stone-900 mb-3">
+            <legend className="font-medium text-cocoa mb-3">
               2. Elegí una fecha
             </legend>
             <input
@@ -225,18 +225,18 @@ export default function ReservarPage() {
               min={minDate}
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="rounded-lg border border-stone-300 px-3 py-2 text-stone-900"
+              className="rounded-lg border border-taupe/30 px-3 py-2 text-cocoa"
             />
           </fieldset>
         )}
 
         {selectedServiceId && date && (
           <fieldset>
-            <legend className="font-medium text-stone-900 mb-3">
+            <legend className="font-medium text-cocoa mb-3">
               3. Elegí un horario
             </legend>
             {loadingSlots ? (
-              <p className="text-stone-500 text-sm">Buscando horarios…</p>
+              <p className="text-taupe text-sm">Buscando horarios…</p>
             ) : slots && slots.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {slots.map((slot) => (
@@ -246,8 +246,8 @@ export default function ReservarPage() {
                     onClick={() => setSelectedSlot(slot)}
                     className={`rounded-full border px-4 py-2 text-sm transition-colors ${
                       selectedSlot?.start === slot.start
-                        ? "border-amber-700 bg-amber-800 text-white"
-                        : "border-stone-300 bg-white text-stone-700 hover:border-amber-400"
+                        ? "border-gold bg-gold text-white"
+                        : "border-taupe/30 bg-white text-cocoa hover:border-gold-light"
                     }`}
                   >
                     {slot.start}
@@ -255,7 +255,7 @@ export default function ReservarPage() {
                 ))}
               </div>
             ) : (
-              <p className="text-stone-500 text-sm">
+              <p className="text-taupe text-sm">
                 No hay horarios disponibles ese día. Probá con otra fecha.
               </p>
             )}
@@ -264,11 +264,11 @@ export default function ReservarPage() {
 
         {selectedSlot && (
           <fieldset className="space-y-4">
-            <legend className="font-medium text-stone-900 mb-1">
+            <legend className="font-medium text-cocoa mb-1">
               4. Tus datos
             </legend>
             <div>
-              <label className="block text-sm text-stone-700 mb-1">
+              <label className="block text-sm text-taupe mb-1">
                 Nombre y apellido
               </label>
               <input
@@ -276,11 +276,11 @@ export default function ReservarPage() {
                 required
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="w-full rounded-lg border border-stone-300 px-3 py-2"
+                className="w-full rounded-lg border border-taupe/30 px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm text-stone-700 mb-1">
+              <label className="block text-sm text-taupe mb-1">
                 Teléfono
               </label>
               <input
@@ -288,29 +288,29 @@ export default function ReservarPage() {
                 required
                 value={clientPhone}
                 onChange={(e) => setClientPhone(e.target.value)}
-                className="w-full rounded-lg border border-stone-300 px-3 py-2"
+                className="w-full rounded-lg border border-taupe/30 px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm text-stone-700 mb-1">
+              <label className="block text-sm text-taupe mb-1">
                 Email (opcional)
               </label>
               <input
                 type="email"
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
-                className="w-full rounded-lg border border-stone-300 px-3 py-2"
+                className="w-full rounded-lg border border-taupe/30 px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm text-stone-700 mb-1">
+              <label className="block text-sm text-taupe mb-1">
                 Notas (opcional)
               </label>
               <textarea
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 rows={3}
-                className="w-full rounded-lg border border-stone-300 px-3 py-2"
+                className="w-full rounded-lg border border-taupe/30 px-3 py-2"
               />
             </div>
 
@@ -319,7 +319,7 @@ export default function ReservarPage() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full rounded-full bg-amber-800 px-6 py-3 text-white font-medium hover:bg-amber-900 disabled:opacity-60"
+              className="w-full rounded-full bg-gold px-6 py-3 text-white font-medium hover:bg-gold-dark disabled:opacity-60"
             >
               {submitting ? "Reservando…" : "Confirmar turno"}
             </button>

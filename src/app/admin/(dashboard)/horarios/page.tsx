@@ -115,33 +115,33 @@ export default function HorariosPage() {
 
   return (
     <div className="space-y-10">
-      <h1 className="text-xl font-semibold text-stone-900">Horarios</h1>
+      <h1 className="text-xl font-semibold text-cocoa">Horarios</h1>
 
       <section className="space-y-4">
-        <h2 className="font-medium text-stone-900">Horario semanal</h2>
+        <h2 className="font-medium text-cocoa">Horario semanal</h2>
 
         {weekly === null ? (
-          <p className="text-stone-500 text-sm">Cargando…</p>
+          <p className="text-taupe text-sm">Cargando…</p>
         ) : (
-          <div className="rounded-xl border border-stone-200 bg-white divide-y divide-stone-200">
+          <div className="rounded-xl border border-nude bg-white divide-y divide-nude">
             {DAY_NAMES.map((name, idx) => (
               <div key={idx} className="px-4 py-3 flex flex-wrap items-center gap-3">
-                <span className="w-24 font-medium text-stone-900 text-sm">
+                <span className="w-24 font-medium text-cocoa text-sm">
                   {name}
                 </span>
                 <div className="flex flex-wrap gap-2 flex-1">
                   {(weeklyByDay.get(idx) ?? []).length === 0 ? (
-                    <span className="text-sm text-stone-400">Cerrado</span>
+                    <span className="text-sm text-taupe">Cerrado</span>
                   ) : (
                     weeklyByDay.get(idx)!.map((range) => (
                       <span
                         key={range.id}
-                        className="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-800 text-sm px-3 py-1"
+                        className="inline-flex items-center gap-2 rounded-full bg-nude text-gold-dark text-sm px-3 py-1"
                       >
                         {range.startTime}–{range.endTime}
                         <button
                           onClick={() => removeWeeklyRange(range.id)}
-                          className="text-amber-500 hover:text-amber-800"
+                          className="text-gold hover:text-gold-dark"
                           aria-label="Eliminar horario"
                         >
                           ×
@@ -157,14 +157,14 @@ export default function HorariosPage() {
 
         <form
           onSubmit={addWeeklyRange}
-          className="rounded-xl border border-stone-200 bg-white p-4 flex flex-wrap items-end gap-3"
+          className="rounded-xl border border-nude bg-white p-4 flex flex-wrap items-end gap-3"
         >
           <div>
-            <label className="block text-xs text-stone-500 mb-1">Día</label>
+            <label className="block text-xs text-taupe mb-1">Día</label>
             <select
               value={dayOfWeek}
               onChange={(e) => setDayOfWeek(e.target.value)}
-              className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+              className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
             >
               {DAY_NAMES.map((name, idx) => (
                 <option key={idx} value={idx}>
@@ -174,26 +174,26 @@ export default function HorariosPage() {
             </select>
           </div>
           <div>
-            <label className="block text-xs text-stone-500 mb-1">Desde</label>
+            <label className="block text-xs text-taupe mb-1">Desde</label>
             <input
               type="time"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+              className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
             />
           </div>
           <div>
-            <label className="block text-xs text-stone-500 mb-1">Hasta</label>
+            <label className="block text-xs text-taupe mb-1">Hasta</label>
             <input
               type="time"
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+              className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
             />
           </div>
           <button
             type="submit"
-            className="rounded-full bg-amber-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-900"
+            className="rounded-full bg-gold px-4 py-1.5 text-sm font-medium text-white hover:bg-gold-dark"
           >
             Agregar
           </button>
@@ -204,31 +204,31 @@ export default function HorariosPage() {
       </section>
 
       <section className="space-y-4">
-        <h2 className="font-medium text-stone-900">
+        <h2 className="font-medium text-cocoa">
           Días y horarios bloqueados
         </h2>
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-taupe">
           Usalo para feriados, vacaciones o cualquier excepción puntual al
           horario semanal.
         </p>
 
         {blocked === null ? (
-          <p className="text-stone-500 text-sm">Cargando…</p>
+          <p className="text-taupe text-sm">Cargando…</p>
         ) : blocked.length === 0 ? (
-          <p className="text-stone-500 text-sm">No hay bloqueos cargados.</p>
+          <p className="text-taupe text-sm">No hay bloqueos cargados.</p>
         ) : (
-          <ul className="divide-y divide-stone-200 rounded-xl border border-stone-200 bg-white">
+          <ul className="divide-y divide-nude rounded-xl border border-nude bg-white">
             {blocked.map((b) => (
               <li key={b.id} className="px-4 py-3 flex items-center justify-between gap-3">
                 <div>
-                  <p className="font-medium text-stone-900 text-sm">
+                  <p className="font-medium text-cocoa text-sm">
                     {b.date}{" "}
                     {b.startTime && b.endTime
                       ? `· ${b.startTime}–${b.endTime}`
                       : "· Todo el día"}
                   </p>
                   {b.reason && (
-                    <p className="text-sm text-stone-500">{b.reason}</p>
+                    <p className="text-sm text-taupe">{b.reason}</p>
                   )}
                 </div>
                 <button
@@ -244,21 +244,21 @@ export default function HorariosPage() {
 
         <form
           onSubmit={addBlockedDate}
-          className="rounded-xl border border-stone-200 bg-white p-4 space-y-3"
+          className="rounded-xl border border-nude bg-white p-4 space-y-3"
         >
           <div className="flex flex-wrap items-end gap-3">
             <div>
-              <label className="block text-xs text-stone-500 mb-1">
+              <label className="block text-xs text-taupe mb-1">
                 Fecha
               </label>
               <input
                 type="date"
                 value={blockDate}
                 onChange={(e) => setBlockDate(e.target.value)}
-                className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+                className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
               />
             </div>
-            <label className="flex items-center gap-2 text-sm text-stone-700 pb-2">
+            <label className="flex items-center gap-2 text-sm text-taupe pb-2">
               <input
                 type="checkbox"
                 checked={blockWholeDay}
@@ -269,46 +269,46 @@ export default function HorariosPage() {
             {!blockWholeDay && (
               <>
                 <div>
-                  <label className="block text-xs text-stone-500 mb-1">
+                  <label className="block text-xs text-taupe mb-1">
                     Desde
                   </label>
                   <input
                     type="time"
                     value={blockStart}
                     onChange={(e) => setBlockStart(e.target.value)}
-                    className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+                    className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-stone-500 mb-1">
+                  <label className="block text-xs text-taupe mb-1">
                     Hasta
                   </label>
                   <input
                     type="time"
                     value={blockEnd}
                     onChange={(e) => setBlockEnd(e.target.value)}
-                    className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+                    className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
                   />
                 </div>
               </>
             )}
           </div>
           <div>
-            <label className="block text-xs text-stone-500 mb-1">
+            <label className="block text-xs text-taupe mb-1">
               Motivo (opcional)
             </label>
             <input
               type="text"
               value={blockReason}
               onChange={(e) => setBlockReason(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 px-3 py-1.5 text-sm"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
               placeholder="Ej: Feriado, vacaciones…"
             />
           </div>
           {blockError && <p className="text-sm text-red-600">{blockError}</p>}
           <button
             type="submit"
-            className="rounded-full bg-amber-800 px-4 py-1.5 text-sm font-medium text-white hover:bg-amber-900"
+            className="rounded-full bg-gold px-4 py-1.5 text-sm font-medium text-white hover:bg-gold-dark"
           >
             Bloquear
           </button>

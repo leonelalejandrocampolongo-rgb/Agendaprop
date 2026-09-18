@@ -18,11 +18,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex-1 flex flex-col">
-      <header className="border-b border-stone-200 bg-white">
+      <header className="border-b border-nude bg-white">
         <div className="mx-auto max-w-5xl px-6 py-4 flex items-center justify-between">
           <div>
-            <p className="font-semibold text-stone-900">AgendaProp</p>
-            <p className="text-xs text-stone-500">
+            <p className="font-semibold text-cocoa">AgendaProp</p>
+            <p className="text-xs text-taupe">
               {session?.user?.name ?? session?.user?.email}
             </p>
           </div>
@@ -33,7 +33,7 @@ export default async function DashboardLayout({
             <Link
               key={item.href}
               href={item.href}
-              className="py-3 border-b-2 border-transparent text-stone-600 hover:text-amber-800 hover:border-amber-800"
+              className="py-3 border-b-2 border-transparent text-taupe hover:text-gold-dark hover:border-gold"
             >
               {item.label}
             </Link>

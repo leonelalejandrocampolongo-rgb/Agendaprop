@@ -116,19 +116,19 @@ export default function ServiciosPage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-xl font-semibold text-stone-900">Servicios</h1>
+      <h1 className="text-xl font-semibold text-cocoa">Servicios</h1>
 
       <form
         onSubmit={handleSubmit}
-        className="rounded-xl border border-stone-200 bg-white p-5 space-y-4"
+        className="rounded-xl border border-nude bg-white p-5 space-y-4"
       >
-        <h2 className="font-medium text-stone-900">
+        <h2 className="font-medium text-cocoa">
           {editingId ? "Editar servicio" : "Nuevo servicio"}
         </h2>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Nombre
             </label>
             <input
@@ -136,11 +136,11 @@ export default function ServiciosPage() {
               required
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Duración (minutos)
             </label>
             <input
@@ -152,11 +152,11 @@ export default function ServiciosPage() {
               onChange={(e) =>
                 setForm({ ...form, durationMinutes: e.target.value })
               }
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Precio ($)
             </label>
             <input
@@ -165,11 +165,11 @@ export default function ServiciosPage() {
               required
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Descripción (opcional)
             </label>
             <textarea
@@ -178,7 +178,7 @@ export default function ServiciosPage() {
                 setForm({ ...form, description: e.target.value })
               }
               rows={2}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
         </div>
@@ -189,7 +189,7 @@ export default function ServiciosPage() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-full bg-amber-800 px-5 py-2 text-sm font-medium text-white hover:bg-amber-900 disabled:opacity-60"
+            className="rounded-full bg-gold px-5 py-2 text-sm font-medium text-white hover:bg-gold-dark disabled:opacity-60"
           >
             {saving ? "Guardando…" : editingId ? "Guardar cambios" : "Crear servicio"}
           </button>
@@ -197,7 +197,7 @@ export default function ServiciosPage() {
             <button
               type="button"
               onClick={cancelEdit}
-              className="rounded-full border border-stone-300 px-5 py-2 text-sm text-stone-700"
+              className="rounded-full border border-taupe/30 px-5 py-2 text-sm text-taupe"
             >
               Cancelar
             </button>
@@ -206,24 +206,24 @@ export default function ServiciosPage() {
       </form>
 
       {services === null ? (
-        <p className="text-stone-500 text-sm">Cargando…</p>
+        <p className="text-taupe text-sm">Cargando…</p>
       ) : (
-        <ul className="divide-y divide-stone-200 rounded-xl border border-stone-200 bg-white">
+        <ul className="divide-y divide-nude rounded-xl border border-nude bg-white">
           {services.map((service) => (
             <li
               key={service.id}
               className="px-4 py-4 flex flex-wrap items-center justify-between gap-4"
             >
               <div>
-                <p className="font-medium text-stone-900 flex items-center gap-2">
+                <p className="font-medium text-cocoa flex items-center gap-2">
                   {service.name}
                   {!service.active && (
-                    <span className="text-xs rounded-full bg-stone-200 text-stone-600 px-2 py-0.5">
+                    <span className="text-xs rounded-full bg-nude text-taupe px-2 py-0.5">
                       Inactivo
                     </span>
                   )}
                 </p>
-                <p className="text-sm text-stone-500">
+                <p className="text-sm text-taupe">
                   {formatDuration(service.durationMinutes)} ·{" "}
                   {formatPrice(service.priceCents)}
                 </p>
@@ -231,19 +231,19 @@ export default function ServiciosPage() {
               <div className="flex gap-2 text-sm">
                 <button
                   onClick={() => startEdit(service)}
-                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-400"
+                  className="rounded-full border border-taupe/30 px-3 py-1.5 text-taupe hover:border-gold-light"
                 >
                   Editar
                 </button>
                 <button
                   onClick={() => toggleActive(service)}
-                  className="rounded-full border border-stone-300 px-3 py-1.5 text-stone-700 hover:border-amber-400"
+                  className="rounded-full border border-taupe/30 px-3 py-1.5 text-taupe hover:border-gold-light"
                 >
                   {service.active ? "Desactivar" : "Activar"}
                 </button>
                 <button
                   onClick={() => remove(service)}
-                  className="rounded-full border border-stone-300 px-3 py-1.5 text-red-600 hover:border-red-300"
+                  className="rounded-full border border-taupe/30 px-3 py-1.5 text-red-600 hover:border-red-300"
                 >
                   Eliminar
                 </button>

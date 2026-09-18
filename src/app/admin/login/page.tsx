@@ -36,12 +36,12 @@ export default function AdminLoginPage() {
   return (
     <main className="flex-1 flex items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-semibold text-stone-900 text-center">
+        <h1 className="text-2xl font-semibold text-cocoa text-center">
           Panel de administración
         </h1>
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">
           <div>
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Email
             </label>
             <input
@@ -50,11 +50,11 @@ export default function AdminLoginPage() {
               autoFocus
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
           <div>
-            <label className="block text-sm text-stone-700 mb-1">
+            <label className="block text-sm text-taupe mb-1">
               Contraseña
             </label>
             <input
@@ -62,7 +62,7 @@ export default function AdminLoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-stone-300 px-3 py-2"
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
 
@@ -71,7 +71,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-full bg-amber-800 px-6 py-2.5 text-white font-medium hover:bg-amber-900 disabled:opacity-60"
+            className="w-full rounded-full bg-gold px-6 py-2.5 text-white font-medium hover:bg-gold-dark disabled:opacity-60"
           >
             {loading ? "Ingresando…" : "Ingresar"}
           </button>

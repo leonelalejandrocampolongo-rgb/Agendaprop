@@ -28,32 +28,32 @@ export default async function AdminDashboardPage() {
 
       <section>
         <div className="flex items-center justify-between mb-3">
-          <h2 className="font-medium text-stone-900">Turnos de hoy</h2>
-          <Link href="/admin/turnos" className="text-sm text-amber-800 hover:underline">
+          <h2 className="font-medium text-cocoa">Turnos de hoy</h2>
+          <Link href="/admin/turnos" className="text-sm text-gold-dark hover:underline">
             Ver todos →
           </Link>
         </div>
 
         {todayAppointments.length === 0 ? (
-          <p className="text-stone-500 text-sm">No hay turnos para hoy.</p>
+          <p className="text-taupe text-sm">No hay turnos para hoy.</p>
         ) : (
-          <ul className="divide-y divide-stone-200 rounded-xl border border-stone-200 bg-white">
+          <ul className="divide-y divide-nude rounded-xl border border-nude bg-white">
             {todayAppointments.map((a) => {
               const service = db.services.find((s) => s.id === a.serviceId);
               return (
                 <li key={a.id} className="flex items-center justify-between px-4 py-3">
                   <div>
-                    <p className="font-medium text-stone-900">
+                    <p className="font-medium text-cocoa">
                       {a.startTime} · {a.clientName}
                     </p>
-                    <p className="text-sm text-stone-500">
+                    <p className="text-sm text-taupe">
                       {service?.name ?? "Servicio eliminado"}
                     </p>
                   </div>
                   <div className="text-right">
                     <StatusBadge status={a.status} />
                     {service && (
-                      <p className="text-xs text-stone-400 mt-1">
+                      <p className="text-xs text-taupe mt-1">
                         {formatPrice(service.priceCents)}
                       </p>
                     )}
@@ -70,9 +70,9 @@ export default async function AdminDashboardPage() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-xl border border-stone-200 bg-white p-4">
-      <p className="text-2xl font-semibold text-stone-900">{value}</p>
-      <p className="text-sm text-stone-500">{label}</p>
+    <div className="rounded-xl border border-nude bg-white p-4">
+      <p className="text-2xl font-semibold text-cocoa">{value}</p>
+      <p className="text-sm text-taupe">{label}</p>
     </div>
   );
 }
