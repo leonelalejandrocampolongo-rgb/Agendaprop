@@ -1,8 +1,12 @@
 import { promises as fs } from "fs";
 import path from "path";
+import bcrypt from "bcryptjs";
 import type { DbShape } from "@/lib/db-types";
 
-const DB_PATH = path.join(process.cwd(), "data", "db.json");
+// En producción, DATA_DIR debe apuntar a un disco persistente (por ejemplo
+// un Volume de Railway montado en /data); si no, cada deploy empieza de cero.
+const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
+const DB_PATH = path.join(DATA_DIR, "db.json");
 
 const EMPTY_DB: DbShape = {
   admins: [],
@@ -11,6 +15,26 @@ const EMPTY_DB: DbShape = {
   blockedDates: [],
   appointments: [],
 };
+
+/**
+ * Crea la primera cuenta admin a partir de ADMIN_EMAIL/ADMIN_PASSWORD si se
+ * proveen por variable de entorno. Solo corre la primera vez (cuando todavía
+ * no existe el archivo de datos), para no necesitar acceso a una terminal
+ * en el servidor de producción.
+ */
+async function seedAdminFromEnv(db: DbShape): Promise<void> {
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+  if (!email || !password) return;
+
+  db.admins.push({
+    id: crypto.randomUUID(),
+    email,
+    passwordHash: await bcrypt.hash(password, 10),
+    name: process.env.ADMIN_NAME || "Administradora",
+    createdAt: new Date().toISOString(),
+  });
+}
 
 // Serializes reads/writes within this process so concurrent requests never
 // interleave and corrupt the file. Good enough for a single-server personal app.
@@ -29,8 +53,10 @@ async function readDb(): Promise<DbShape> {
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
       await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-      await fs.writeFile(DB_PATH, JSON.stringify(EMPTY_DB, null, 2));
-      return { ...EMPTY_DB };
+      const db = { ...EMPTY_DB };
+      await seedAdminFromEnv(db);
+      await fs.writeFile(DB_PATH, JSON.stringify(db, null, 2));
+      return db;
     }
     throw err;
   }
