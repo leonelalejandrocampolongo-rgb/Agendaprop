@@ -15,7 +15,7 @@ export default async function HomePage() {
       <section className="bg-rose-50 border-b border-rose-100">
         <div className="mx-auto max-w-4xl px-6 py-16 text-center">
           <h1 className="text-3xl sm:text-4xl font-semibold text-stone-900">
-            Bienestar y belleza, a tu ritmo
+            Bienestar Mariana Cabello
           </h1>
           <p className="mt-4 text-stone-600 max-w-xl mx-auto">
             Reservá tu turno de masajes, tratamientos faciales y estética
