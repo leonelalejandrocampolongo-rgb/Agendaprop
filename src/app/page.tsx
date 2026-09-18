@@ -30,7 +30,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section className="bg-amber-50">
+      <section>
         <div className="mx-auto max-w-4xl px-6 py-14">
           <h2 className="text-xl font-semibold text-stone-900 mb-6">
             Nuestros servicios
