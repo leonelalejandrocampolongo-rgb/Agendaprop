@@ -41,6 +41,7 @@ export default function ReservarPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
 
   const minDate = todayDateString();
 
@@ -70,10 +71,16 @@ export default function ReservarPage() {
       .finally(() => setLoadingSlots(false));
   }, [selectedServiceId, date]);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedServiceId || !date || !selectedSlot) return;
+    setShowDepositModal(true);
+  }
 
+  async function submitAppointment() {
+    if (!selectedServiceId || !date || !selectedSlot) return;
+
+    setShowDepositModal(false);
     setSubmitting(true);
     setError(null);
     try {
@@ -172,7 +179,7 @@ export default function ReservarPage() {
         Reservar turno
       </h1>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-8">
+      <form onSubmit={handleFormSubmit} className="mt-8 space-y-8">
         <fieldset>
           <legend className="font-medium text-cocoa mb-3">
             1. Elegí un servicio
@@ -326,6 +333,66 @@ export default function ReservarPage() {
           </fieldset>
         )}
       </form>
+
+      {showDepositModal && selectedService && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-cocoa/50 px-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-lg font-semibold text-cocoa">
+              Confirmación de tu turno
+            </h2>
+            <p className="mt-3 text-sm text-taupe">
+              Para reservar tu turno se solicita una seña del 50% del valor
+              del servicio
+              {selectedService && (
+                <>
+                  {" "}
+                  (<strong>{formatPrice(selectedService.priceCents / 2)}</strong>)
+                </>
+              )}
+              .
+            </p>
+
+            <div className="mt-4 rounded-xl bg-nude p-4 text-sm text-cocoa">
+              <p>
+                <strong>Alias:</strong> mariana.cabello
+              </p>
+              <p>
+                <strong>Titular:</strong> Mariana Guadalupe Cabello
+              </p>
+            </div>
+
+            <p className="mt-4 text-sm text-taupe">
+              Una vez realizada la transferencia, enviame el comprobante por
+              WhatsApp al <strong>1568464060</strong>.
+            </p>
+            <p className="mt-2 text-sm text-taupe">
+              Tu turno quedará pendiente de confirmación hasta recibir la
+              seña.
+            </p>
+
+            {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+
+            <div className="mt-6 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={submitAppointment}
+                disabled={submitting}
+                className="w-full rounded-full bg-gold px-6 py-3 text-white font-medium hover:bg-gold-dark disabled:opacity-60"
+              >
+                {submitting ? "Reservando…" : "Continuar con la reserva"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowDepositModal(false)}
+                disabled={submitting}
+                className="w-full rounded-full px-6 py-2 text-sm text-taupe hover:underline disabled:opacity-60"
+              >
+                Volver
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
