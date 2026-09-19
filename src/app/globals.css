@@ -21,3 +21,246 @@ body {
   color: var(--color-cocoa);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* =========================================
+   HERO PREMIUM
+   ========================================= */
+
+.hero-premium {
+  position: relative;
+  min-height: 335px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgba(255, 250, 242, 0.9),
+    rgba(232, 214, 194, 0.95)
+  );
+
+  color: #3d342f;
+}
+
+/* Contenido central */
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 55px 20px;
+}
+
+/* Título */
+
+.hero-content h1 {
+  margin: 0;
+
+  font-family: Georgia, "Times New Roman", serif;
+
+  font-size: clamp(38px, 4vw, 58px);
+
+  font-weight: 400;
+
+  letter-spacing: -1.5px;
+
+  color: #3b302b;
+}
+
+/* Línea dorada */
+
+.hero-divider {
+  width: 85px;
+  height: 2px;
+
+  margin: 22px 0 20px;
+
+  background: #c89d43;
+}
+
+/* Descripción */
+
+.hero-content p {
+  margin: 0 0 32px;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 18px;
+
+  letter-spacing: 2px;
+
+  color: #655952;
+}
+
+/* Botón */
+
+.hero-button {
+  border: none;
+
+  padding: 16px 34px;
+
+  min-width: 205px;
+
+  border-radius: 999px;
+
+  background: #cda044;
+
+  color: white;
+
+  font-size: 16px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+
+  box-shadow: 0 8px 20px rgba(130, 94, 35, 0.18);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.hero-button span {
+  margin-left: 10px;
+
+  font-size: 18px;
+}
+
+.hero-button:hover {
+  transform: translateY(-2px);
+
+  background: #bd9037;
+
+  box-shadow: 0 12px 25px rgba(130, 94, 35, 0.24);
+}
+
+/* =========================================
+   DECORACIÓN BOTÁNICA
+   ========================================= */
+
+.hero-decoration {
+  position: absolute;
+
+  width: 180px;
+  height: 260px;
+
+  opacity: 0.65;
+
+  pointer-events: none;
+}
+
+.hero-decoration-left {
+  left: -25px;
+  top: 40px;
+}
+
+.hero-decoration-right {
+  right: -25px;
+  bottom: 15px;
+
+  transform: scaleX(-1);
+}
+
+/* Tallos */
+
+.hero-decoration::before {
+  content: "";
+
+  position: absolute;
+
+  width: 2px;
+  height: 210px;
+
+  background: #c49a50;
+
+  left: 70px;
+  top: 20px;
+
+  transform: rotate(35deg);
+
+  transform-origin: bottom;
+}
+
+/* Hojas */
+
+.hero-decoration span {
+  position: absolute;
+
+  width: 65px;
+  height: 28px;
+
+  border: 1.5px solid #c49a50;
+
+  border-radius: 100% 0 100% 0;
+
+  transform: rotate(-25deg);
+}
+
+.hero-decoration span:nth-child(1) {
+  left: 32px;
+  top: 65px;
+}
+
+.hero-decoration span:nth-child(2) {
+  left: 55px;
+  top: 115px;
+
+  transform: rotate(15deg);
+}
+
+.hero-decoration span:nth-child(3) {
+  left: 85px;
+  top: 160px;
+
+  transform: rotate(-5deg);
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .hero-premium {
+    min-height: 330px;
+  }
+
+  .hero-content {
+    padding: 45px 20px;
+  }
+
+  .hero-content h1 {
+    font-size: 36px;
+
+    line-height: 1.15;
+  }
+
+  .hero-content p {
+    font-size: 15px;
+
+    letter-spacing: 1.2px;
+  }
+
+  .hero-decoration {
+    opacity: 0.3;
+
+    transform: scale(0.7);
+  }
+
+  .hero-decoration-left {
+    left: -70px;
+  }
+
+  .hero-decoration-right {
+    right: -70px;
+
+    transform: scaleX(-1) scale(0.7);
+  }
+}

@@ -12,21 +12,30 @@ export default async function HomePage() {
 
   return (
     <main className="flex-1">
-      <section className="bg-champagne border-b border-dustypink/30">
-        <div className="mx-auto max-w-4xl px-6 py-16 text-center">
-          <h1 className="text-3xl sm:text-4xl font-semibold text-cocoa">
-            Bienestar Mariana Cabello
-          </h1>
-          <p className="mt-4 text-taupe max-w-xl mx-auto">
-            Reservá tu turno de masajes, tratamientos faciales y estética
-            online, en pocos pasos y sin llamadas.
-          </p>
-          <Link
-            href="/reservar"
-            className="inline-block mt-8 rounded-full bg-gold px-8 py-3 text-white font-medium hover:bg-gold-dark transition-colors"
-          >
+      <section className="hero-premium">
+        <div className="hero-decoration hero-decoration-left">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div className="hero-content">
+          <h1>Bienestar Mariana Cabello</h1>
+
+          <div className="hero-divider"></div>
+
+          <p>Tu momento de bienestar empieza acá.</p>
+
+          <Link href="/reservar" className="hero-button">
             Reservar turno
+            <span>→</span>
           </Link>
+        </div>
+
+        <div className="hero-decoration hero-decoration-right">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </section>
 
