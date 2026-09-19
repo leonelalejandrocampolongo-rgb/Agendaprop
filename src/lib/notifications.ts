@@ -1,6 +1,10 @@
 import type { Appointment, Service } from "@/lib/db-types";
 import { sendEmail } from "@/lib/email";
 import { formatDateLong, formatPrice } from "@/lib/format";
+import { buildWhatsAppLink } from "@/lib/whatsapp";
+
+const DEPOSIT_WHATSAPP_NUMBER = "1568464060";
+const DEPOSIT_ALIAS = "mariana.cabello";
 
 function appointmentSummary(appointment: Appointment, service: Service): string {
   return `${service.name} · ${formatDateLong(appointment.date)} a las ${appointment.startTime} hs`;
@@ -16,6 +20,11 @@ export async function notifyNewAppointment(
   const tasks: Promise<void>[] = [];
 
   if (appointment.clientEmail) {
+    const depositAmount = formatPrice(service.priceCents / 2);
+    const whatsappLink = buildWhatsAppLink(
+      DEPOSIT_WHATSAPP_NUMBER,
+      `Hola! Te envío el comprobante de la seña para mi turno de ${service.name} el ${formatDateLong(appointment.date)} a las ${appointment.startTime} hs.`,
+    );
     tasks.push(
       sendEmail({
         to: appointment.clientEmail,
@@ -23,7 +32,14 @@ export async function notifyNewAppointment(
         html: `
           <p>Hola ${appointment.clientName},</p>
           <p>Recibimos tu solicitud de turno para <strong>${summary}</strong>.</p>
-          <p>Todavía está <strong>pendiente de confirmación</strong>; te vamos a avisar en cuanto lo confirmemos.</p>
+          <p>Para reservar tu turno se solicita una seña del 50% del valor del servicio (<strong>${depositAmount}</strong>).</p>
+          <p><strong>Alias:</strong> ${DEPOSIT_ALIAS}</p>
+          <p>Todavía está <strong>pendiente de confirmación</strong>; te vamos a avisar en cuanto recibamos la seña del 50% se confirmará el turno.</p>
+          <p style="margin-top: 20px;">
+            <a href="${whatsappLink}" style="display:inline-block;background-color:#C9A24A;color:#ffffff;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:600;">
+              Enviar comprobante por WhatsApp
+            </a>
+          </p>
         `,
       }),
     );
