@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
 import { formatDuration, formatPrice } from "@/lib/format";
+import { HeroBranch } from "@/components/hero-branch";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,7 @@ export default async function HomePage() {
     <main className="flex-1">
       <section className="hero-premium">
         <div className="hero-decoration hero-decoration-left">
-          <span></span>
-          <span></span>
-          <span></span>
+          <HeroBranch />
         </div>
 
         <div className="hero-content">
@@ -33,9 +32,7 @@ export default async function HomePage() {
         </div>
 
         <div className="hero-decoration hero-decoration-right">
-          <span></span>
-          <span></span>
-          <span></span>
+          <HeroBranch />
         </div>
       </section>
 
