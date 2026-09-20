@@ -34,7 +34,7 @@ export async function notifyNewAppointment(
           <p>Recibimos tu solicitud de turno para <strong>${summary}</strong>.</p>
           <p>Para reservar tu turno se solicita una seña del 50% del valor del servicio (<strong>${depositAmount}</strong>).</p>
           <p><strong>Alias:</strong> ${DEPOSIT_ALIAS}</p>
-          <p>Todavía está <strong>pendiente de confirmación</strong>; te vamos a avisar en cuanto recibamos la seña del 50% se confirmará el turno.</p>
+          <p>Todavía está <strong>pendiente de confirmación</strong>; te vamos a avisar en cuanto recibamos la seña.</p>
           <p style="margin-top: 20px;">
             <a href="${whatsappLink}" style="display:inline-block;background-color:#C9A24A;color:#ffffff;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:600;">
               Enviar comprobante por WhatsApp
