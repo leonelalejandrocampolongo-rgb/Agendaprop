@@ -13,12 +13,13 @@ const createSchema = z.object({
   packSessionsCount: z.coerce.number().int().min(2).max(50).nullable().optional(),
 });
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!(await requireAdminSession())) return unauthorized();
+  const includeHidden = request.nextUrl.searchParams.get("includeHidden") === "true";
   const db = await getDb();
-  const services = [...db.services].sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  const services = db.services
+    .filter((s) => includeHidden || !s.hidden)
+    .sort((a, b) => a.name.localeCompare(b.name));
   return NextResponse.json({ services });
 }
 
@@ -40,6 +41,7 @@ export async function POST(request: NextRequest) {
       active: parsed.data.active ?? true,
       isPack: parsed.data.isPack ?? false,
       packSessionsCount: parsed.data.isPack ? parsed.data.packSessionsCount ?? null : null,
+      hidden: false,
       createdAt: now,
       updatedAt: now,
     };

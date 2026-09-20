@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDateLong, formatPrice } from "@/lib/format";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
@@ -16,6 +17,7 @@ type Appointment = {
   notes: string | null;
   status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
   archivedAt: string | null;
+  depositPaidCents: number | null;
   service: { name: string; priceCents: number } | null;
 };
 
@@ -41,6 +43,10 @@ export default function TurnosPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [viewFilter, setViewFilter] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [reschedulingId, setReschedulingId] = useState<string | null>(null);
+  const [rescheduleDate, setRescheduleDate] = useState("");
+  const [rescheduleTime, setRescheduleTime] = useState("");
+  const [rescheduleError, setRescheduleError] = useState<string | null>(null);
 
   async function load() {
     const params = new URLSearchParams();
@@ -94,10 +100,42 @@ export default function TurnosPage() {
     setUpdatingId(null);
   }
 
+  function startReschedule(a: Appointment) {
+    setReschedulingId(a.id);
+    setRescheduleDate(a.date);
+    setRescheduleTime(a.startTime);
+    setRescheduleError(null);
+  }
+
+  async function saveReschedule(id: string) {
+    if (!rescheduleDate || !rescheduleTime) return;
+    setUpdatingId(id);
+    setRescheduleError(null);
+    const res = await fetch(`/api/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ date: rescheduleDate, startTime: rescheduleTime }),
+    });
+    setUpdatingId(null);
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      setRescheduleError(data?.error || "No se pudo reprogramar el turno.");
+      return;
+    }
+    setReschedulingId(null);
+    await load();
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-cocoa">Turnos</h1>
+        <Link
+          href="/admin/turnos/personalizado"
+          className="rounded-full bg-gold px-4 py-2 text-sm font-medium text-white hover:bg-gold-dark"
+        >
+          Crear turno personalizado
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-3 items-end">
@@ -155,71 +193,120 @@ export default function TurnosPage() {
       ) : (
         <ul className="divide-y divide-nude rounded-xl border border-nude bg-white">
           {appointments.map((a) => (
-            <li key={a.id} className="px-4 py-4 flex flex-wrap items-center gap-4 justify-between">
-              <div>
-                <p className="font-medium text-cocoa">
-                  {a.date} · {a.startTime}–{a.endTime}
-                </p>
-                <p className="text-sm text-taupe">
-                  {a.service?.name ?? "Servicio eliminado"}
-                  {a.service && ` · ${formatPrice(a.service.priceCents)}`}
-                </p>
-                <p className="text-sm text-taupe mt-0.5">
-                  {a.clientName} · {a.clientPhone}
-                  {a.clientEmail && ` · ${a.clientEmail}`}
-                </p>
-                {a.notes && (
-                  <p className="text-sm text-taupe mt-0.5 italic">
-                    &ldquo;{a.notes}&rdquo;
+            <li key={a.id} className="px-4 py-4 space-y-3">
+              <div className="flex flex-wrap items-center gap-4 justify-between">
+                <div>
+                  <p className="font-medium text-cocoa">
+                    {a.date} · {a.startTime}–{a.endTime}
                   </p>
-                )}
+                  <p className="text-sm text-taupe">
+                    {a.service?.name ?? "Servicio eliminado"}
+                    {a.service && ` · ${formatPrice(a.service.priceCents)}`}
+                    {a.depositPaidCents != null && ` · Abonado: ${formatPrice(a.depositPaidCents)}`}
+                  </p>
+                  <p className="text-sm text-taupe mt-0.5">
+                    {a.clientName} · {a.clientPhone}
+                    {a.clientEmail && ` · ${a.clientEmail}`}
+                  </p>
+                  {a.notes && (
+                    <p className="text-sm text-taupe mt-0.5 italic">
+                      &ldquo;{a.notes}&rdquo;
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <StatusBadge status={a.status} />
+                  {a.archivedAt ? (
+                    <button
+                      onClick={() => restoreAppointment(a.id)}
+                      disabled={updatingId === a.id}
+                      className="rounded-full border border-gold/50 px-3 py-1.5 text-sm text-gold-dark hover:bg-nude disabled:opacity-50"
+                    >
+                      Restaurar
+                    </button>
+                  ) : (
+                    <>
+                      <select
+                        value={a.status}
+                        disabled={updatingId === a.id}
+                        onChange={(e) =>
+                          updateStatus(a.id, e.target.value as Appointment["status"])
+                        }
+                        className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm disabled:opacity-50"
+                      >
+                        <option value="PENDING">Pendiente</option>
+                        <option value="CONFIRMED">Confirmado</option>
+                        <option value="COMPLETED">Completado</option>
+                        <option value="CANCELLED">Cancelado</option>
+                      </select>
+                      <button
+                        onClick={() => startReschedule(a)}
+                        disabled={updatingId === a.id}
+                        className="rounded-full border border-taupe/30 px-3 py-1.5 text-sm text-taupe hover:border-gold-light disabled:opacity-50"
+                      >
+                        Reprogramar
+                      </button>
+                      <a
+                        href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-full border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 hover:bg-emerald-50"
+                      >
+                        WhatsApp
+                      </a>
+                      {a.status === "CANCELLED" && (
+                        <button
+                          onClick={() => archiveAppointment(a.id)}
+                          disabled={updatingId === a.id}
+                          className="rounded-full border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                        >
+                          🗑 Eliminar
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
               </div>
 
-              <div className="flex items-center gap-3">
-                <StatusBadge status={a.status} />
-                {a.archivedAt ? (
+              {reschedulingId === a.id && (
+                <div className="flex flex-wrap items-end gap-2 rounded-lg bg-nude/50 p-3">
+                  <div>
+                    <label className="block text-xs text-taupe mb-1">Nueva fecha</label>
+                    <input
+                      type="date"
+                      value={rescheduleDate}
+                      onChange={(e) => setRescheduleDate(e.target.value)}
+                      className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-taupe mb-1">Nuevo horario</label>
+                    <input
+                      type="time"
+                      value={rescheduleTime}
+                      onChange={(e) => setRescheduleTime(e.target.value)}
+                      className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm"
+                    />
+                  </div>
                   <button
-                    onClick={() => restoreAppointment(a.id)}
+                    onClick={() => saveReschedule(a.id)}
                     disabled={updatingId === a.id}
-                    className="rounded-full border border-gold/50 px-3 py-1.5 text-sm text-gold-dark hover:bg-nude disabled:opacity-50"
+                    className="rounded-full bg-gold px-4 py-1.5 text-sm font-medium text-white hover:bg-gold-dark disabled:opacity-60"
                   >
-                    Restaurar
+                    Guardar
                   </button>
-                ) : (
-                  <>
-                    <select
-                      value={a.status}
-                      disabled={updatingId === a.id}
-                      onChange={(e) =>
-                        updateStatus(a.id, e.target.value as Appointment["status"])
-                      }
-                      className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm disabled:opacity-50"
-                    >
-                      <option value="PENDING">Pendiente</option>
-                      <option value="CONFIRMED">Confirmado</option>
-                      <option value="COMPLETED">Completado</option>
-                      <option value="CANCELLED">Cancelado</option>
-                    </select>
-                    <a
-                      href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 hover:bg-emerald-50"
-                    >
-                      WhatsApp
-                    </a>
-                    {a.status === "CANCELLED" && (
-                      <button
-                        onClick={() => archiveAppointment(a.id)}
-                        disabled={updatingId === a.id}
-                        className="rounded-full border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
-                      >
-                        🗑 Eliminar
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
+                  <button
+                    onClick={() => setReschedulingId(null)}
+                    className="rounded-full border border-taupe/30 px-4 py-1.5 text-sm text-taupe"
+                  >
+                    Cancelar
+                  </button>
+                  {rescheduleError && (
+                    <p className="w-full text-sm text-red-600">{rescheduleError}</p>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ul>

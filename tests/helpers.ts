@@ -17,6 +17,7 @@ export function makeService(overrides: Partial<Service> = {}): Service {
     active: true,
     isPack: false,
     packSessionsCount: null,
+    hidden: false,
     createdAt: now,
     updatedAt: now,
     ...overrides,
@@ -29,6 +30,14 @@ export function makePackService(overrides: Partial<Service> = {}): Service {
     isPack: true,
     packSessionsCount: 4,
     priceCents: 13500000, // $135.000
+    ...overrides,
+  });
+}
+
+export function makeHiddenService(overrides: Partial<Service> = {}): Service {
+  return makeService({
+    name: "Personalizado – Masaje de espalda + Maderoterapia",
+    hidden: true,
     ...overrides,
   });
 }

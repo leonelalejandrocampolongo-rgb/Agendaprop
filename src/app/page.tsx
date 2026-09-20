@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const db = await getDb();
   const services = db.services
-    .filter((s) => s.active)
+    .filter((s) => s.active && !s.hidden)
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (

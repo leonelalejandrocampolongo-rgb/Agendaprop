@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     const appointment = await mutateDb((db) => {
       const service = db.services.find(
-        (s) => s.id === serviceId && s.active,
+        (s) => s.id === serviceId && s.active && !s.hidden,
       );
       if (!service) {
         throw new Error("SERVICE_NOT_FOUND");
@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
         packId: null,
         packSessionNumber: null,
         archivedAt: null,
+        depositPaidCents: null,
         createdAt: now,
         updatedAt: now,
       };

@@ -9,6 +9,8 @@ export type Service = {
   isPack: boolean;
   /** Cantidad de sesiones que incluye el pack. Solo aplica si isPack. */
   packSessionsCount: number | null;
+  /** Si es true, no se muestra en el catálogo público ni se puede reservar desde la web (turno personalizado de un solo admin). */
+  hidden: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -51,6 +53,8 @@ export type Appointment = {
   packSessionNumber: number | null;
   /** "Eliminado visual": sigue existiendo, pero no se muestra en la lista por defecto. */
   archivedAt: string | null;
+  /** Monto ya abonado (opcional, informativo). En centavos. */
+  depositPaidCents: number | null;
   createdAt: string;
   updatedAt: string;
 };

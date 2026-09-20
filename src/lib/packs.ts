@@ -262,6 +262,7 @@ export function schedulePackSession(
     packId: pack.id,
     packSessionNumber: nextPackSessionNumber(db, pack),
     archivedAt: null,
+    depositPaidCents: null,
     createdAt: now,
     updatedAt: now,
   };

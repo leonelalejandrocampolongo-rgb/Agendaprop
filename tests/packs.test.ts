@@ -466,6 +466,7 @@ describe("reservas individuales (no pack)", () => {
       packId: null,
       packSessionNumber: null,
       archivedAt: null,
+      depositPaidCents: null,
       createdAt: now,
       updatedAt: now,
     });

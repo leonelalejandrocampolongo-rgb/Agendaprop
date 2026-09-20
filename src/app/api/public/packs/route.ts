@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
   try {
     const { pack, appointment } = await mutateDb((db) => {
       const service = db.services.find(
-        (s) => s.id === serviceId && s.active,
+        (s) => s.id === serviceId && s.active && !s.hidden,
       );
       if (!service) throw new Error("SERVICE_NOT_FOUND");
       if (!service.isPack || !service.packSessionsCount) {
