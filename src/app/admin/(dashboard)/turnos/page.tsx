@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/status-badge";
-import { formatDateLong, formatPrice } from "@/lib/format";
+import { formatDateLong, formatDateShort, formatPrice } from "@/lib/format";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 type Appointment = {
@@ -197,7 +197,7 @@ export default function TurnosPage() {
               <div className="flex flex-wrap items-center gap-4 justify-between">
                 <div>
                   <p className="font-medium text-cocoa">
-                    {a.date} · {a.startTime}–{a.endTime}
+                    {formatDateShort(a.date)} · {a.startTime}–{a.endTime}
                   </p>
                   <p className="text-sm text-taupe">
                     {a.service?.name ?? "Servicio eliminado"}

@@ -6,6 +6,12 @@ export function formatPrice(cents: number): string {
   }).format(cents / 100);
 }
 
+/** "YYYY-MM-DD" -> "DD-MM-YYYY". */
+export function formatDateShort(date: string): string {
+  const [y, m, d] = date.split("-");
+  return `${d}-${m}-${y}`;
+}
+
 export function formatDateLong(date: string): string {
   const [y, m, d] = date.split("-").map(Number);
   const dt = new Date(Date.UTC(y, m - 1, d));
