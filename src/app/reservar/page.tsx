@@ -11,6 +11,8 @@ type Service = {
   description: string | null;
   durationMinutes: number;
   priceCents: number;
+  isPack?: boolean;
+  packSessionsCount?: number | null;
 };
 
 type Slot = { start: string; end: string };
@@ -84,19 +86,22 @@ export default function ReservarPage() {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch("/api/public/appointments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          serviceId: selectedServiceId,
-          date,
-          startTime: selectedSlot.start,
-          clientName,
-          clientPhone,
-          clientEmail: clientEmail || undefined,
-          notes: notes || undefined,
-        }),
-      });
+      const res = await fetch(
+        selectedService?.isPack ? "/api/public/packs" : "/api/public/appointments",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            serviceId: selectedServiceId,
+            date,
+            startTime: selectedSlot.start,
+            clientName,
+            clientPhone,
+            clientEmail: clientEmail || undefined,
+            notes: notes || undefined,
+          }),
+        },
+      );
 
       if (res.status === 409) {
         setError("Ese horario ya no está disponible, elegí otro.");
@@ -129,18 +134,23 @@ export default function ReservarPage() {
       <main className="flex-1 mx-auto max-w-lg px-6 py-16 text-center">
         <div className="rounded-2xl border border-dustypink/40 bg-champagne p-8">
           <h1 className="text-2xl font-semibold text-cocoa">
-            ¡Turno reservado!
+            {selectedService.isPack ? "¡Pack solicitado!" : "¡Turno reservado!"}
           </h1>
           <p className="mt-3 text-taupe">
-            Te esperamos para tu turno de{" "}
+            {selectedService.isPack
+              ? "Te esperamos para tu primera sesión de "
+              : "Te esperamos para tu turno de "}
             <strong>{selectedService.name}</strong>
+            {selectedService.isPack && ` (1/${selectedService.packSessionsCount})`}
           </p>
           <p className="mt-1 text-taupe">
             {formatDateLong(date)}, {selectedSlot.start} hs
           </p>
           <p className="mt-4 text-sm text-taupe">
-            Te vamos a confirmar el turno a la brevedad. Si necesitás
-            cancelar o reprogramar, contactanos.
+            {selectedService.isPack
+              ? "Te vamos a confirmar el pack y tu primera sesión a la brevedad."
+              : "Te vamos a confirmar el turno a la brevedad."}{" "}
+            Si necesitás cancelar o reprogramar, contactanos.
           </p>
 
           {BUSINESS_WHATSAPP_NUMBER && (
@@ -210,10 +220,16 @@ export default function ReservarPage() {
                   />
                   <p className="font-medium text-cocoa">
                     {service.name}
+                    {service.isPack && (
+                      <span className="ml-2 text-xs rounded-full bg-champagne text-cocoa px-2 py-0.5 align-middle">
+                        Pack x{service.packSessionsCount}
+                      </span>
+                    )}
                   </p>
                   <p className="mt-1 text-sm text-taupe">
                     {formatDuration(service.durationMinutes)} ·{" "}
                     {formatPrice(service.priceCents)}
+                    {service.isPack && " (pack completo)"}
                   </p>
                 </label>
               ))}
@@ -224,7 +240,7 @@ export default function ReservarPage() {
         {selectedServiceId && (
           <fieldset>
             <legend className="font-medium text-cocoa mb-3">
-              2. Elegí una fecha
+              2. Elegí la fecha {selectedService?.isPack ? "de tu primera sesión" : ""}
             </legend>
             <input
               type="date"
@@ -338,19 +354,33 @@ export default function ReservarPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-cocoa/50 px-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <h2 className="text-lg font-semibold text-cocoa">
-              Confirmación de tu turno
+              {selectedService?.isPack ? "Confirmación de tu pack" : "Confirmación de tu turno"}
             </h2>
-            <p className="mt-3 text-sm text-taupe">
-              Para reservar tu turno se solicita una seña del 50% del valor
-              del servicio
-              {selectedService && (
-                <>
-                  {" "}
-                  (<strong>{formatPrice(selectedService.priceCents / 2)}</strong>)
-                </>
-              )}
-              .
-            </p>
+
+            {selectedService?.isPack ? (
+              <>
+                <p className="mt-3 text-sm text-taupe">
+                  Pack x{selectedService.packSessionsCount}:{" "}
+                  <strong>{formatPrice(selectedService.priceCents)}</strong>
+                </p>
+                <p className="text-sm text-taupe">
+                  Pago inicial 50%:{" "}
+                  <strong>{formatPrice(selectedService.priceCents / 2)}</strong>
+                </p>
+              </>
+            ) : (
+              <p className="mt-3 text-sm text-taupe">
+                Para reservar tu turno se solicita una seña del 50% del valor
+                del servicio
+                {selectedService && (
+                  <>
+                    {" "}
+                    (<strong>{formatPrice(selectedService.priceCents / 2)}</strong>)
+                  </>
+                )}
+                .
+              </p>
+            )}
 
             <div className="mt-4 rounded-xl bg-nude p-4 text-sm text-cocoa">
               <p>
@@ -365,10 +395,20 @@ export default function ReservarPage() {
               Una vez realizada la transferencia, enviame el comprobante por
               WhatsApp al <strong>1568464060</strong>.
             </p>
-            <p className="mt-2 text-sm text-taupe">
-              Tu turno quedará pendiente de confirmación hasta recibir la
-              seña.
-            </p>
+            {selectedService?.isPack ? (
+              <>
+                <p className="mt-2 text-sm text-taupe">
+                  Tu primera sesión quedará pendiente de confirmación hasta
+                  que recibamos el comprobante. Una vez confirmado el pack,
+                  coordinaremos las sesiones restantes.
+                </p>
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-taupe">
+                Tu turno quedará pendiente de confirmación hasta recibir la
+                seña.
+              </p>
+            )}
 
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 

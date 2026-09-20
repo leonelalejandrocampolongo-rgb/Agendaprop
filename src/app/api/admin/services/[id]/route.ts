@@ -14,6 +14,8 @@ const updateSchema = z.object({
   durationMinutes: z.coerce.number().int().min(5).max(600).optional(),
   priceCents: z.coerce.number().int().min(0).optional(),
   active: z.boolean().optional(),
+  isPack: z.boolean().optional(),
+  packSessionsCount: z.coerce.number().int().min(2).max(50).nullable().optional(),
 });
 
 export async function PATCH(
@@ -31,6 +33,7 @@ export async function PATCH(
     const existing = db.services.find((s) => s.id === id);
     if (!existing) return null;
     Object.assign(existing, parsed.data, { updatedAt: new Date().toISOString() });
+    if (parsed.data.isPack === false) existing.packSessionsCount = null;
     return existing;
   });
 

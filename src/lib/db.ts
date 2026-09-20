@@ -14,6 +14,8 @@ const EMPTY_DB: DbShape = {
   weeklyAvailability: [],
   blockedDates: [],
   appointments: [],
+  packs: [],
+  packPayments: [],
 };
 
 /**

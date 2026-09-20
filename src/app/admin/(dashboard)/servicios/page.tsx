@@ -10,6 +10,8 @@ type Service = {
   durationMinutes: number;
   priceCents: number;
   active: boolean;
+  isPack?: boolean;
+  packSessionsCount?: number | null;
 };
 
 type FormState = {
@@ -17,6 +19,8 @@ type FormState = {
   description: string;
   durationMinutes: string;
   price: string;
+  isPack: boolean;
+  packSessionsCount: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -24,6 +28,8 @@ const EMPTY_FORM: FormState = {
   description: "",
   durationMinutes: "60",
   price: "",
+  isPack: false,
+  packSessionsCount: "4",
 };
 
 export default function ServiciosPage() {
@@ -50,6 +56,8 @@ export default function ServiciosPage() {
       description: service.description ?? "",
       durationMinutes: String(service.durationMinutes),
       price: String(service.priceCents / 100),
+      isPack: service.isPack ?? false,
+      packSessionsCount: String(service.packSessionsCount ?? 4),
     });
   }
 
@@ -72,11 +80,19 @@ export default function ServiciosPage() {
       return;
     }
 
+    if (form.isPack && (!Number(form.packSessionsCount) || Number(form.packSessionsCount) < 2)) {
+      setError("La cantidad de sesiones del pack debe ser 2 o más.");
+      setSaving(false);
+      return;
+    }
+
     const payload = {
       name: form.name.trim(),
       description: form.description.trim() || undefined,
       durationMinutes: durationNumber,
       priceCents: Math.round(priceNumber * 100),
+      isPack: form.isPack,
+      packSessionsCount: form.isPack ? Number(form.packSessionsCount) : null,
     };
 
     const res = await fetch(
@@ -181,6 +197,38 @@ export default function ServiciosPage() {
               className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
+          <div className="sm:col-span-2 flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isPack"
+              checked={form.isPack}
+              onChange={(e) => setForm({ ...form, isPack: e.target.checked })}
+              className="rounded border-taupe/30"
+            />
+            <label htmlFor="isPack" className="text-sm text-taupe">
+              Es un pack de varias sesiones
+            </label>
+          </div>
+          {form.isPack && (
+            <div>
+              <label className="block text-sm text-taupe mb-1">
+                Cantidad de sesiones del pack
+              </label>
+              <input
+                type="number"
+                min={2}
+                step={1}
+                value={form.packSessionsCount}
+                onChange={(e) =>
+                  setForm({ ...form, packSessionsCount: e.target.value })
+                }
+                className="w-full rounded-lg border border-taupe/30 px-3 py-2"
+              />
+              <p className="mt-1 text-xs text-taupe">
+                El precio de arriba es el precio total del pack.
+              </p>
+            </div>
+          )}
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}
@@ -220,6 +268,11 @@ export default function ServiciosPage() {
                   {!service.active && (
                     <span className="text-xs rounded-full bg-nude text-taupe px-2 py-0.5">
                       Inactivo
+                    </span>
+                  )}
+                  {service.isPack && (
+                    <span className="text-xs rounded-full bg-champagne text-cocoa px-2 py-0.5">
+                      Pack x{service.packSessionsCount}
                     </span>
                   )}
                 </p>

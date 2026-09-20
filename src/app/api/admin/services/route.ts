@@ -9,6 +9,8 @@ const createSchema = z.object({
   durationMinutes: z.coerce.number().int().min(5).max(600),
   priceCents: z.coerce.number().int().min(0),
   active: z.boolean().optional(),
+  isPack: z.boolean().optional(),
+  packSessionsCount: z.coerce.number().int().min(2).max(50).nullable().optional(),
 });
 
 export async function GET() {
@@ -36,6 +38,8 @@ export async function POST(request: NextRequest) {
       durationMinutes: parsed.data.durationMinutes,
       priceCents: parsed.data.priceCents,
       active: parsed.data.active ?? true,
+      isPack: parsed.data.isPack ?? false,
+      packSessionsCount: parsed.data.isPack ? parsed.data.packSessionsCount ?? null : null,
       createdAt: now,
       updatedAt: now,
     };

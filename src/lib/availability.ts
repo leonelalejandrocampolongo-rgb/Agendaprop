@@ -53,10 +53,13 @@ export function getAvailableSlots({
   db,
   serviceId,
   date,
+  excludeAppointmentId,
 }: {
   db: DbShape;
   serviceId: string;
   date: string;
+  /** Ignora este turno al calcular ocupación (útil al reprogramarlo). */
+  excludeAppointmentId?: string;
 }): Slot[] {
   const service = db.services.find((s) => s.id === serviceId && s.active);
   if (!service) return [];
@@ -84,6 +87,7 @@ export function getAvailableSlots({
     .filter(
       (a) =>
         a.date === date &&
+        a.id !== excludeAppointmentId &&
         (a.status === "PENDING" || a.status === "CONFIRMED"),
     )
     .map((a) => ({
@@ -122,13 +126,15 @@ export function isSlotStillAvailable({
   date,
   startTime,
   endTime,
+  excludeAppointmentId,
 }: {
   db: DbShape;
   serviceId: string;
   date: string;
   startTime: string;
   endTime: string;
+  excludeAppointmentId?: string;
 }): boolean {
-  const slots = getAvailableSlots({ db, serviceId, date });
+  const slots = getAvailableSlots({ db, serviceId, date, excludeAppointmentId });
   return slots.some((s) => s.start === startTime && s.end === endTime);
 }

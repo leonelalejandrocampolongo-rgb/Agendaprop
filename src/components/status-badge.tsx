@@ -3,6 +3,7 @@ const STATUS_LABELS: Record<string, string> = {
   CONFIRMED: "Confirmado",
   CANCELLED: "Cancelado",
   COMPLETED: "Completado",
+  ACTIVE: "Activo",
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -10,6 +11,7 @@ const STATUS_STYLES: Record<string, string> = {
   CONFIRMED: "bg-emerald-100 text-emerald-800",
   CANCELLED: "bg-stone-200 text-stone-600",
   COMPLETED: "bg-sky-100 text-sky-800",
+  ACTIVE: "bg-emerald-100 text-emerald-800",
 };
 
 export function StatusBadge({ status }: { status: string }) {
