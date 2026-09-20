@@ -5,6 +5,7 @@ import { buildWhatsAppLink } from "@/lib/whatsapp";
 
 const DEPOSIT_WHATSAPP_NUMBER = "1568464060";
 const DEPOSIT_ALIAS = "mariana.cabello";
+const BUSINESS_ADDRESS = "Evita 911, Timbre 1, Ciudad Madero";
 
 function appointmentSummary(appointment: Appointment, service: Service): string {
   return `${service.name} · ${formatDateLong(appointment.date)} a las ${appointment.startTime} hs`;
@@ -104,6 +105,7 @@ export async function notifyAppointmentStatusChange(
       <p>${copy.body}</p>
       <p><strong>${summary}</strong></p>
       ${packSession ? `<p>${service.name}<br/>Sesión ${packSession.number} de ${packSession.total}</p>` : ""}
+      ${appointment.status === "CONFIRMED" ? `<p>📍 ${BUSINESS_ADDRESS}</p>` : ""}
     `,
   });
 }
