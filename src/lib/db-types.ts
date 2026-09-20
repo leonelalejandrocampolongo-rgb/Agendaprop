@@ -49,6 +49,8 @@ export type Appointment = {
   packId: string | null;
   /** Número de sesión dentro del pack (1-based). Solo aplica si packId. */
   packSessionNumber: number | null;
+  /** "Eliminado visual": sigue existiendo, pero no se muestra en la lista por defecto. */
+  archivedAt: string | null;
   createdAt: string;
   updatedAt: string;
 };

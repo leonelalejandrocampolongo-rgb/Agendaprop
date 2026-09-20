@@ -66,6 +66,7 @@ export async function POST(request: NextRequest) {
         status: "PENDING" as const,
         packId: null,
         packSessionNumber: null,
+        archivedAt: null,
         createdAt: now,
         updatedAt: now,
       };

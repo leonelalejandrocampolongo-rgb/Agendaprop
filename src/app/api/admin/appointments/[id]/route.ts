@@ -16,6 +16,8 @@ const updateSchema = z.object({
   notes: z.string().trim().max(500).nullable().optional(),
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   startTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
+  /** "Eliminado visual": true archiva el turno (solo si está CANCELLED), false lo restaura. */
+  archived: z.boolean().optional(),
 });
 
 export async function PATCH(
@@ -69,6 +71,14 @@ export async function PATCH(
       statusChanged = data.status !== undefined && data.status !== existing.status;
       if (data.status !== undefined) existing.status = data.status;
       if (data.notes !== undefined) existing.notes = data.notes;
+
+      if (data.archived === true) {
+        if (existing.status !== "CANCELLED") throw new Error("NOT_CANCELLED");
+        existing.archivedAt = new Date().toISOString();
+      } else if (data.archived === false) {
+        existing.archivedAt = null;
+      }
+
       existing.updatedAt = new Date().toISOString();
 
       if (existing.packId) {
@@ -110,6 +120,9 @@ export async function PATCH(
         { error: "Ese horario ya no está disponible, elegí otro." },
         { status: 409 },
       );
+    }
+    if (err instanceof Error && err.message === "NOT_CANCELLED") {
+      return badRequest("Solo se pueden eliminar turnos cancelados.");
     }
     throw err;
   }

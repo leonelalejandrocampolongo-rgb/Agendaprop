@@ -387,6 +387,53 @@ describe("cancelPack", () => {
   });
 });
 
+describe("archivar (eliminado visual) una sesión cancelada de un pack", () => {
+  it("no modifica el pack, los pagos ni el conteo de sesiones, y libera el horario", () => {
+    const service = makePackService();
+    const db = makeDb([service]);
+    const { pack } = createManualPack(db, service, {
+      serviceId: service.id,
+      clientName: "Clienta",
+      clientPhone: "1111111111",
+      sessionsCount: 4,
+      totalPriceCents: 13500000,
+      status: "ACTIVE",
+      initialPayment: { amountCents: 6750000, paymentDate: futureDate(0), method: "TRANSFER" },
+    });
+
+    const date = futureDate(10);
+    const session = schedulePackSession(db, pack, service, { date, startTime: "10:00" });
+    session.status = "CANCELLED";
+
+    const paidBefore = packPaidCents(db, pack.id);
+    const completedBefore = completedPackSessionsCount(db, pack.id);
+    const activeBefore = activePackSessions(db, pack.id).length;
+
+    // "eliminar" (archivar) la sesión cancelada, como hace el endpoint admin
+    session.archivedAt = new Date().toISOString();
+
+    assert.equal(pack.status, "ACTIVE");
+    assert.equal(packPaidCents(db, pack.id), paidBefore);
+    assert.equal(completedPackSessionsCount(db, pack.id), completedBefore);
+    assert.equal(activePackSessions(db, pack.id).length, activeBefore);
+    assert.equal(db.packPayments.length, 1);
+    // se conserva en el historial del pack (no se borra el registro)
+    assert.ok(db.appointments.some((a) => a.id === session.id && a.packId === pack.id));
+
+    // el horario sigue libre (cancelado y/o archivado nunca bloquean disponibilidad)
+    assert.equal(
+      isSlotStillAvailable({
+        db,
+        serviceId: service.id,
+        date,
+        startTime: "10:00",
+        endTime: "11:00",
+      }),
+      true,
+    );
+  });
+});
+
 describe("reservas individuales (no pack)", () => {
   it("no se ven afectadas por los packs", () => {
     const normalService = makeService();
@@ -418,6 +465,7 @@ describe("reservas individuales (no pack)", () => {
       status: "CONFIRMED",
       packId: null,
       packSessionNumber: null,
+      archivedAt: null,
       createdAt: now,
       updatedAt: now,
     });

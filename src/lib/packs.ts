@@ -261,6 +261,7 @@ export function schedulePackSession(
     status: pack.status === "ACTIVE" ? "CONFIRMED" : "PENDING",
     packId: pack.id,
     packSessionNumber: nextPackSessionNumber(db, pack),
+    archivedAt: null,
     createdAt: now,
     updatedAt: now,
   };

@@ -7,11 +7,18 @@ export async function GET(request: NextRequest) {
 
   const date = request.nextUrl.searchParams.get("date");
   const status = request.nextUrl.searchParams.get("status");
+  // "true" = solo archivados, "all" = todos, cualquier otro valor (o ausente) = solo no archivados.
+  const archived = request.nextUrl.searchParams.get("archived");
 
   const db = await getDb();
   let appointments = db.appointments;
   if (date) appointments = appointments.filter((a) => a.date === date);
   if (status) appointments = appointments.filter((a) => a.status === status);
+  if (archived === "true") {
+    appointments = appointments.filter((a) => a.archivedAt);
+  } else if (archived !== "all") {
+    appointments = appointments.filter((a) => !a.archivedAt);
+  }
 
   const withService = appointments
     .map((a) => ({

@@ -15,6 +15,7 @@ type Appointment = {
   clientEmail: string | null;
   notes: string | null;
   status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED";
+  archivedAt: string | null;
   service: { name: string; priceCents: number } | null;
 };
 
@@ -26,18 +27,26 @@ const STATUS_FILTERS = [
   { value: "CANCELLED", label: "Cancelados" },
 ];
 
+const VIEW_FILTERS = [
+  { value: "", label: "Activos" },
+  { value: "true", label: "Archivados" },
+  { value: "all", label: "Todos" },
+];
+
 export default function TurnosPage() {
   const [appointments, setAppointments] = useState<Appointment[] | null>(
     null,
   );
   const [dateFilter, setDateFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [viewFilter, setViewFilter] = useState("");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   async function load() {
     const params = new URLSearchParams();
     if (dateFilter) params.set("date", dateFilter);
     if (statusFilter) params.set("status", statusFilter);
+    if (viewFilter) params.set("archived", viewFilter);
     const res = await fetch(`/api/admin/appointments?${params}`);
     const data = await res.json();
     setAppointments(data.appointments ?? []);
@@ -46,7 +55,7 @@ export default function TurnosPage() {
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateFilter, statusFilter]);
+  }, [dateFilter, statusFilter, viewFilter]);
 
   async function updateStatus(id: string, status: Appointment["status"]) {
     setUpdatingId(id);
@@ -54,6 +63,32 @@ export default function TurnosPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
+    });
+    await load();
+    setUpdatingId(null);
+  }
+
+  async function archiveAppointment(id: string) {
+    const ok = confirm(
+      "¿Querés eliminar este turno de la lista?\n\nEl turno dejará de mostrarse en tu agenda, pero se conservará en el historial.",
+    );
+    if (!ok) return;
+    setUpdatingId(id);
+    await fetch(`/api/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: true }),
+    });
+    await load();
+    setUpdatingId(null);
+  }
+
+  async function restoreAppointment(id: string) {
+    setUpdatingId(id);
+    await fetch(`/api/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: false }),
     });
     await load();
     setUpdatingId(null);
@@ -83,6 +118,20 @@ export default function TurnosPage() {
             className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
           >
             {STATUS_FILTERS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs text-taupe mb-1">Mostrar</label>
+          <select
+            value={viewFilter}
+            onChange={(e) => setViewFilter(e.target.value)}
+            className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm"
+          >
+            {VIEW_FILTERS.map((f) => (
               <option key={f.value} value={f.value}>
                 {f.label}
               </option>
@@ -128,27 +177,48 @@ export default function TurnosPage() {
 
               <div className="flex items-center gap-3">
                 <StatusBadge status={a.status} />
-                <select
-                  value={a.status}
-                  disabled={updatingId === a.id}
-                  onChange={(e) =>
-                    updateStatus(a.id, e.target.value as Appointment["status"])
-                  }
-                  className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm disabled:opacity-50"
-                >
-                  <option value="PENDING">Pendiente</option>
-                  <option value="CONFIRMED">Confirmado</option>
-                  <option value="COMPLETED">Completado</option>
-                  <option value="CANCELLED">Cancelado</option>
-                </select>
-                <a
-                  href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 hover:bg-emerald-50"
-                >
-                  WhatsApp
-                </a>
+                {a.archivedAt ? (
+                  <button
+                    onClick={() => restoreAppointment(a.id)}
+                    disabled={updatingId === a.id}
+                    className="rounded-full border border-gold/50 px-3 py-1.5 text-sm text-gold-dark hover:bg-nude disabled:opacity-50"
+                  >
+                    Restaurar
+                  </button>
+                ) : (
+                  <>
+                    <select
+                      value={a.status}
+                      disabled={updatingId === a.id}
+                      onChange={(e) =>
+                        updateStatus(a.id, e.target.value as Appointment["status"])
+                      }
+                      className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm disabled:opacity-50"
+                    >
+                      <option value="PENDING">Pendiente</option>
+                      <option value="CONFIRMED">Confirmado</option>
+                      <option value="COMPLETED">Completado</option>
+                      <option value="CANCELLED">Cancelado</option>
+                    </select>
+                    <a
+                      href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="rounded-full border border-emerald-300 px-3 py-1.5 text-sm text-emerald-700 hover:bg-emerald-50"
+                    >
+                      WhatsApp
+                    </a>
+                    {a.status === "CANCELLED" && (
+                      <button
+                        onClick={() => archiveAppointment(a.id)}
+                        disabled={updatingId === a.id}
+                        className="rounded-full border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                      >
+                        🗑 Eliminar
+                      </button>
+                    )}
+                  </>
+                )}
               </div>
             </li>
           ))}
