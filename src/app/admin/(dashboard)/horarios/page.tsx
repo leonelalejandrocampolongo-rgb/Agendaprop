@@ -34,6 +34,9 @@ export default function HorariosPage() {
   const [blockReason, setBlockReason] = useState("");
   const [blockError, setBlockError] = useState<string | null>(null);
 
+  const [bufferMinutes, setBufferMinutes] = useState<number | null>(null);
+  const [savingBuffer, setSavingBuffer] = useState(false);
+
   async function loadWeekly() {
     const res = await fetch("/api/admin/availability");
     const data = await res.json();
@@ -46,10 +49,28 @@ export default function HorariosPage() {
     setBlocked(data.blockedDates ?? []);
   }
 
+  async function loadSettings() {
+    const res = await fetch("/api/admin/settings");
+    const data = await res.json();
+    setBufferMinutes(data.settings?.bufferMinutes ?? 15);
+  }
+
   useEffect(() => {
     loadWeekly();
     loadBlocked();
+    loadSettings();
   }, []);
+
+  async function updateBufferMinutes(value: number) {
+    setBufferMinutes(value);
+    setSavingBuffer(true);
+    await fetch("/api/admin/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bufferMinutes: value }),
+    });
+    setSavingBuffer(false);
+  }
 
   async function addWeeklyRange(e: React.FormEvent) {
     e.preventDefault();
@@ -201,6 +222,25 @@ export default function HorariosPage() {
             <p className="w-full text-sm text-red-600">{weeklyError}</p>
           )}
         </form>
+      </section>
+
+      <section className="space-y-3">
+        <h2 className="font-medium text-cocoa">Margen entre turnos</h2>
+        <p className="text-sm text-taupe">
+          Tiempo mínimo obligatorio entre el fin de un turno y el inicio del
+          siguiente. No se muestra como un turno aparte, pero ese intervalo
+          queda bloqueado para nuevas reservas.
+        </p>
+        <select
+          value={bufferMinutes ?? 15}
+          disabled={bufferMinutes === null || savingBuffer}
+          onChange={(e) => updateBufferMinutes(Number(e.target.value))}
+          className="rounded-lg border border-taupe/30 px-3 py-1.5 text-sm disabled:opacity-50"
+        >
+          <option value={0}>0 minutos</option>
+          <option value={15}>15 minutos</option>
+          <option value={30}>30 minutos</option>
+        </select>
       </section>
 
       <section className="space-y-4">

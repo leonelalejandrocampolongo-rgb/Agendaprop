@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { getDb, mutateDb, newId } from "@/lib/db";
-import { minutesToTime, timeToMinutes } from "@/lib/availability";
+import { isSlotStillAvailable, minutesToTime, timeToMinutes } from "@/lib/availability";
 import { badRequest, notFound } from "@/lib/api-helpers";
 import { notifyNewAppointment } from "@/lib/notifications";
 
@@ -41,14 +41,9 @@ export async function POST(request: NextRequest) {
         timeToMinutes(startTime) + service.durationMinutes,
       );
 
-      const stillFree = !db.appointments.some(
-        (a) =>
-          a.date === date &&
-          (a.status === "PENDING" || a.status === "CONFIRMED") &&
-          timeToMinutes(a.startTime) < timeToMinutes(endTime) &&
-          timeToMinutes(startTime) < timeToMinutes(a.endTime),
-      );
-      if (!stillFree) {
+      if (
+        !isSlotStillAvailable({ db, serviceId: service.id, date, startTime, endTime })
+      ) {
         throw new Error("SLOT_TAKEN");
       }
 

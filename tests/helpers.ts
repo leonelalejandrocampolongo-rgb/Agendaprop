@@ -43,7 +43,7 @@ export function makeHiddenService(overrides: Partial<Service> = {}): Service {
 }
 
 /** DbShape vacío con disponibilidad todos los días 09:00-20:00 (evita depender del día de la semana). */
-export function makeDb(services: Service[] = []): DbShape {
+export function makeDb(services: Service[] = [], bufferMinutes = 0): DbShape {
   const weeklyAvailability = [0, 1, 2, 3, 4, 5, 6].map((dayOfWeek) => ({
     id: crypto.randomUUID(),
     dayOfWeek,
@@ -59,5 +59,6 @@ export function makeDb(services: Service[] = []): DbShape {
     appointments: [],
     packs: [],
     packPayments: [],
+    settings: { bufferMinutes },
   };
 }

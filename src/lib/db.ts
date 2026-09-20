@@ -16,6 +16,7 @@ const EMPTY_DB: DbShape = {
   appointments: [],
   packs: [],
   packPayments: [],
+  settings: { bufferMinutes: 15 },
 };
 
 /**

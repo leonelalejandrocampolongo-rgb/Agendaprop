@@ -97,6 +97,11 @@ export type PackPayment = {
   createdAt: string;
 };
 
+export type Settings = {
+  /** Margen mínimo obligatorio (en minutos) entre el fin de un turno y el inicio del siguiente. */
+  bufferMinutes: number;
+};
+
 export type DbShape = {
   admins: Admin[];
   services: Service[];
@@ -105,4 +110,5 @@ export type DbShape = {
   appointments: Appointment[];
   packs: Pack[];
   packPayments: PackPayment[];
+  settings: Settings;
 };

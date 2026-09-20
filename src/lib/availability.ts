@@ -1,6 +1,7 @@
 import type { DbShape } from "@/lib/db-types";
 
 const SLOT_STEP_MINUTES = 15;
+const DEFAULT_BUFFER_MINUTES = 15;
 
 export function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
@@ -83,6 +84,10 @@ export function getAvailableSlots({
     end: timeToMinutes(b.endTime as string),
   }));
 
+  // El margen se aplica a ambos lados de cada turno ya reservado, así queda
+  // el mismo hueco obligatorio entre dos turnos sin importar cuál se agende
+  // primero. No se aplica a los bloqueos manuales (son cierres explícitos).
+  const bufferMinutes = db.settings?.bufferMinutes ?? DEFAULT_BUFFER_MINUTES;
   const busyRanges = db.appointments
     .filter(
       (a) =>
@@ -91,8 +96,8 @@ export function getAvailableSlots({
         (a.status === "PENDING" || a.status === "CONFIRMED"),
     )
     .map((a) => ({
-      start: timeToMinutes(a.startTime),
-      end: timeToMinutes(a.endTime),
+      start: timeToMinutes(a.startTime) - bufferMinutes,
+      end: timeToMinutes(a.endTime) + bufferMinutes,
     }));
 
   const blockingRanges = [...blockedRanges, ...busyRanges];
