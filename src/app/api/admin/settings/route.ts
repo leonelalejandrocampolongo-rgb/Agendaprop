@@ -10,9 +10,21 @@ export async function GET() {
 }
 
 const updateSchema = z.object({
-  bufferMinutes: z.coerce.number().int().refine((v) => v === 0 || v === 15 || v === 30, {
-    message: "El margen debe ser 0, 15 o 30 minutos",
-  }),
+  bufferMinutes: z
+    .coerce.number().int()
+    .refine((v) => v === 0 || v === 15 || v === 30, {
+      message: "El margen debe ser 0, 15 o 30 minutos",
+    })
+    .optional(),
+  businessName: z.string().trim().min(1).optional(),
+  depositAlias: z.string().trim().min(1).optional(),
+  depositAccountHolder: z.string().trim().min(1).optional(),
+  depositWhatsappNumber: z
+    .string()
+    .trim()
+    .regex(/^\d+$/, "Solo números, sin '+' ni espacios")
+    .optional(),
+  businessAddress: z.string().trim().min(1).optional(),
 });
 
 export async function PATCH(request: NextRequest) {
@@ -23,7 +35,7 @@ export async function PATCH(request: NextRequest) {
   if (!parsed.success) return badRequest("Datos inválidos", parsed.error.flatten());
 
   const settings = await mutateDb((db) => {
-    db.settings.bufferMinutes = parsed.data.bufferMinutes;
+    Object.assign(db.settings, parsed.data);
     return db.settings;
   });
 

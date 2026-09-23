@@ -19,7 +19,7 @@ export default async function HomePage() {
         </div>
 
         <div className="hero-content">
-          <h1>Bienestar Mariana Cabello</h1>
+          <h1>{db.settings.businessName}</h1>
 
           <div className="hero-divider"></div>
 

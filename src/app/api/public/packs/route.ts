@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const service = db.services.find((s) => s.id === pack.serviceId);
     if (service) {
       const adminEmails = db.admins.map((a) => a.email);
-      notifyNewPackRequest(pack, appointment, service, adminEmails).catch((err) =>
+      notifyNewPackRequest(pack, appointment, service, adminEmails, db.settings).catch((err) =>
         console.error("[notifications] error al avisar nuevo pack", err),
       );
     }

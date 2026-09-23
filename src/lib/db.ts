@@ -16,7 +16,17 @@ const EMPTY_DB: DbShape = {
   appointments: [],
   packs: [],
   packPayments: [],
-  settings: { bufferMinutes: 15 },
+  // Estos valores por defecto reproducen lo que hoy está fijo en el código
+  // para que un negocio ya en producción no note ningún cambio hasta que
+  // alguien edite Configuración.
+  settings: {
+    bufferMinutes: 15,
+    businessName: "Bienestar Mariana Cabello",
+    depositAlias: "mariana.cabello",
+    depositAccountHolder: "Mariana Guadalupe Cabello",
+    depositWhatsappNumber: "1568464060",
+    businessAddress: "Evita 911, Timbre 1, Ciudad Madero",
+  },
 };
 
 /**
@@ -52,7 +62,15 @@ function enqueue<T>(task: () => Promise<T>): Promise<T> {
 async function readDb(): Promise<DbShape> {
   try {
     const raw = await fs.readFile(DB_PATH, "utf-8");
-    return { ...EMPTY_DB, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    // `settings` se combina campo por campo: un archivo viejo que ya tenía
+    // `settings.bufferMinutes` pero no los campos nuevos (agregados después)
+    // no debe perderlos por un merge superficial a nivel raíz.
+    return {
+      ...EMPTY_DB,
+      ...parsed,
+      settings: { ...EMPTY_DB.settings, ...parsed.settings },
+    };
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === "ENOENT") {
       await fs.mkdir(path.dirname(DB_PATH), { recursive: true });

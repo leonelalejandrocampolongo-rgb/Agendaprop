@@ -59,6 +59,13 @@ export function makeDb(services: Service[] = [], bufferMinutes = 0): DbShape {
     appointments: [],
     packs: [],
     packPayments: [],
-    settings: { bufferMinutes },
+    settings: {
+      bufferMinutes,
+      businessName: "Negocio de Prueba",
+      depositAlias: "prueba.alias",
+      depositAccountHolder: "Titular de Prueba",
+      depositWhatsappNumber: "5491100000000",
+      businessAddress: "Calle Falsa 123",
+    },
   };
 }

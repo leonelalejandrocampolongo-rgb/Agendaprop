@@ -107,6 +107,16 @@ export type PackPayment = {
 export type Settings = {
   /** Margen mínimo obligatorio (en minutos) entre el fin de un turno y el inicio del siguiente. */
   bufferMinutes: number;
+  /** Nombre del negocio, mostrado en el hero de la home. */
+  businessName: string;
+  /** Alias de transferencia para la seña. */
+  depositAlias: string;
+  /** Titular de la cuenta para la seña. */
+  depositAccountHolder: string;
+  /** Número de WhatsApp (solo dígitos) donde las clientas mandan el comprobante de la seña. */
+  depositWhatsappNumber: string;
+  /** Dirección del local, mostrada en el email de turno confirmado. */
+  businessAddress: string;
 };
 
 export type DbShape = {

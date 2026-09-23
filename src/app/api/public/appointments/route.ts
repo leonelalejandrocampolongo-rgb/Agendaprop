@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     const service = db.services.find((s) => s.id === appointment.serviceId);
     if (service) {
       const adminEmails = db.admins.map((a) => a.email);
-      notifyNewAppointment(appointment, service, adminEmails).catch((err) =>
+      notifyNewAppointment(appointment, service, adminEmails, db.settings).catch((err) =>
         console.error("[notifications] error al avisar nuevo turno", err),
       );
     }

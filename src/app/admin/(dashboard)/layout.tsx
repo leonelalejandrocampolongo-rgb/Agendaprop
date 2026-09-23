@@ -9,6 +9,7 @@ const NAV = [
   { href: "/admin/servicios", label: "Servicios" },
   { href: "/admin/horarios", label: "Horarios" },
   { href: "/admin/contabilidad", label: "Contabilidad" },
+  { href: "/admin/configuracion", label: "Configuración" },
 ];
 
 export default async function DashboardLayout({

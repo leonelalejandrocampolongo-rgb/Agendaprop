@@ -41,7 +41,7 @@ export async function POST(
     const db = await getDb();
     const service = db.services.find((s) => s.id === pack.serviceId);
     if (service && appointment.status === "CONFIRMED" && appointment.packSessionNumber) {
-      notifyAppointmentStatusChange(appointment, service, {
+      notifyAppointmentStatusChange(appointment, service, db.settings, {
         number: appointment.packSessionNumber,
         total: pack.sessionsCount,
       }).catch((err) =>

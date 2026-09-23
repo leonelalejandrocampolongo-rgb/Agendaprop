@@ -17,6 +17,14 @@ type Service = {
 
 type Slot = { start: string; end: string };
 
+type PublicSettings = {
+  businessName: string;
+  depositAlias: string;
+  depositAccountHolder: string;
+  depositWhatsappNumber: string;
+  businessAddress: string;
+};
+
 function todayDateString(): string {
   const now = new Date();
   const y = now.getFullYear();
@@ -44,6 +52,7 @@ export default function ReservarPage() {
   const [error, setError] = useState<string | null>(null);
   const [confirmed, setConfirmed] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [settings, setSettings] = useState<PublicSettings | null>(null);
 
   const minDate = todayDateString();
 
@@ -52,6 +61,10 @@ export default function ReservarPage() {
       .then((r) => r.json())
       .then((data) => setServices(data.services ?? []))
       .catch(() => setServices([]));
+    fetch("/api/public/settings")
+      .then((r) => r.json())
+      .then((data) => setSettings(data.settings ?? null))
+      .catch(() => setSettings(null));
   }, []);
 
   const selectedService = useMemo(
@@ -384,16 +397,16 @@ export default function ReservarPage() {
 
             <div className="mt-4 rounded-xl bg-nude p-4 text-sm text-cocoa">
               <p>
-                <strong>Alias:</strong> mariana.cabello
+                <strong>Alias:</strong> {settings?.depositAlias}
               </p>
               <p>
-                <strong>Titular:</strong> Mariana Guadalupe Cabello
+                <strong>Titular:</strong> {settings?.depositAccountHolder}
               </p>
             </div>
 
             <p className="mt-4 text-sm text-taupe">
               Una vez realizada la transferencia, enviame el comprobante por
-              WhatsApp al <strong>1568464060</strong>.
+              WhatsApp al <strong>{settings?.depositWhatsappNumber}</strong>.
             </p>
             {selectedService?.isPack ? (
               <>

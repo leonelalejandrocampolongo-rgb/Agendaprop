@@ -101,6 +101,7 @@ export async function PATCH(
         notifyAppointmentStatusChange(
           appointment,
           service,
+          db.settings,
           pack && appointment.packSessionNumber
             ? { number: appointment.packSessionNumber, total: pack.sessionsCount }
             : undefined,

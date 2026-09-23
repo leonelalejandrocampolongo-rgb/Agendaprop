@@ -1,11 +1,7 @@
-import type { Appointment, Pack, Service } from "@/lib/db-types";
+import type { Appointment, Pack, Service, Settings } from "@/lib/db-types";
 import { sendEmail } from "@/lib/email";
 import { formatDateLong, formatPrice } from "@/lib/format";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
-
-const DEPOSIT_WHATSAPP_NUMBER = "1568464060";
-const DEPOSIT_ALIAS = "mariana.cabello";
-const BUSINESS_ADDRESS = "Evita 911, Timbre 1, Ciudad Madero";
 
 function appointmentSummary(appointment: Appointment, service: Service): string {
   return `${service.name} · ${formatDateLong(appointment.date)} a las ${appointment.startTime} hs`;
@@ -15,6 +11,7 @@ export async function notifyNewAppointment(
   appointment: Appointment,
   service: Service,
   adminEmails: string[],
+  settings: Settings,
 ): Promise<void> {
   const summary = appointmentSummary(appointment, service);
 
@@ -23,7 +20,7 @@ export async function notifyNewAppointment(
   if (appointment.clientEmail) {
     const depositAmount = formatPrice(service.priceCents / 2);
     const whatsappLink = buildWhatsAppLink(
-      DEPOSIT_WHATSAPP_NUMBER,
+      settings.depositWhatsappNumber,
       `Hola! Te envío el comprobante de la seña para mi turno de ${service.name} el ${formatDateLong(appointment.date)} a las ${appointment.startTime} hs.`,
     );
     tasks.push(
@@ -34,7 +31,7 @@ export async function notifyNewAppointment(
           <p>Hola ${appointment.clientName},</p>
           <p>Recibimos tu solicitud de turno para <strong>${summary}</strong>.</p>
           <p>Para reservar tu turno se solicita una seña del 50% del valor del servicio (<strong>${depositAmount}</strong>).</p>
-          <p><strong>Alias:</strong> ${DEPOSIT_ALIAS}</p>
+          <p><strong>Alias:</strong> ${settings.depositAlias}</p>
           <p>Todavía está <strong>pendiente de confirmación</strong>; te vamos a avisar en cuanto recibamos la seña.</p>
           <p style="margin-top: 20px;">
             <a href="${whatsappLink}" style="display:inline-block;background-color:#C9A24A;color:#ffffff;padding:12px 24px;border-radius:999px;text-decoration:none;font-weight:600;">
@@ -89,6 +86,7 @@ const STATUS_EMAIL_COPY: Record<string, { subject: string; body: string } | unde
 export async function notifyAppointmentStatusChange(
   appointment: Appointment,
   service: Service,
+  settings: Settings,
   packSession?: { number: number; total: number },
 ): Promise<void> {
   if (!appointment.clientEmail) return;
@@ -105,7 +103,7 @@ export async function notifyAppointmentStatusChange(
       <p>${copy.body}</p>
       <p><strong>${summary}</strong></p>
       ${packSession ? `<p>${service.name}<br/>Sesión ${packSession.number} de ${packSession.total}</p>` : ""}
-      ${appointment.status === "CONFIRMED" ? `<p>📍 ${BUSINESS_ADDRESS}</p>` : ""}
+      ${appointment.status === "CONFIRMED" ? `<p>📍 ${settings.businessAddress}</p>` : ""}
     `,
   });
 }
@@ -116,6 +114,7 @@ export async function notifyNewPackRequest(
   firstSession: Appointment,
   service: Service,
   adminEmails: string[],
+  settings: Settings,
 ): Promise<void> {
   const depositAmount = formatPrice(pack.totalPriceCents / 2);
   const totalAmount = formatPrice(pack.totalPriceCents);
@@ -125,7 +124,7 @@ export async function notifyNewPackRequest(
 
   if (pack.clientEmail) {
     const whatsappLink = buildWhatsAppLink(
-      DEPOSIT_WHATSAPP_NUMBER,
+      settings.depositWhatsappNumber,
       `Hola! Te envío el comprobante del pago inicial para mi pack de ${service.name} (${pack.sessionsCount} sesiones).`,
     );
     tasks.push(
@@ -138,7 +137,7 @@ export async function notifyNewPackRequest(
           <p>Primera sesión: <strong>${when}</strong>.</p>
           <p>Pack x${pack.sessionsCount}: <strong>${totalAmount}</strong></p>
           <p>Pago inicial 50%: <strong>${depositAmount}</strong></p>
-          <p><strong>Alias:</strong> ${DEPOSIT_ALIAS}</p>
+          <p><strong>Alias:</strong> ${settings.depositAlias}</p>
           <p>Para reservar tu pack se solicita un pago inicial del 50%. Tu primera
           sesión quedará pendiente de confirmación hasta que recibamos el
           comprobante. Una vez confirmado el pack, coordinaremos las sesiones
