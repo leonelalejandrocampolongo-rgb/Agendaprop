@@ -21,6 +21,7 @@ function bookAppointment(db: ReturnType<typeof makeDb>, serviceId: string, date:
     packSessionNumber: null,
     archivedAt: null,
     depositPaidCents: null,
+    priceCentsAtBooking: null,
     createdAt: now,
     updatedAt: now,
   });

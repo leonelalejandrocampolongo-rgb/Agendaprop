@@ -132,6 +132,7 @@ export function createCustomAppointment(
     packSessionNumber: null,
     archivedAt: null,
     depositPaidCents: input.depositPaidCents || null,
+    priceCentsAtBooking: service.priceCents,
     createdAt: now,
     updatedAt: now,
   };

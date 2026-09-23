@@ -263,6 +263,9 @@ export function schedulePackSession(
     packSessionNumber: nextPackSessionNumber(db, pack),
     archivedAt: null,
     depositPaidCents: null,
+    // Las sesiones de pack no se cuentan individualmente en los ingresos
+    // (eso lo hacen los PackPayment del pack); se congela igual por prolijidad.
+    priceCentsAtBooking: service.priceCents,
     createdAt: now,
     updatedAt: now,
   };

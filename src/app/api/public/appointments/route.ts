@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
         packSessionNumber: null,
         archivedAt: null,
         depositPaidCents: null,
+        priceCentsAtBooking: service.priceCents,
         createdAt: now,
         updatedAt: now,
       };

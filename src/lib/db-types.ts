@@ -55,6 +55,13 @@ export type Appointment = {
   archivedAt: string | null;
   /** Monto ya abonado (opcional, informativo). En centavos. */
   depositPaidCents: number | null;
+  /**
+   * Precio del servicio congelado al momento de crear el turno, en
+   * centavos. Se usa para reportes de ingresos, para que no cambien
+   * retroactivamente si después se edita el precio del servicio. Nullable
+   * porque los turnos creados antes de este campo no lo tienen.
+   */
+  priceCentsAtBooking: number | null;
   createdAt: string;
   updatedAt: string;
 };
