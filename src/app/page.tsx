@@ -23,7 +23,7 @@ export default async function HomePage() {
 
           <div className="hero-divider"></div>
 
-          <p>Tu momento de bienestar empieza acá.</p>
+          <p>{db.settings.heroTagline}</p>
 
           <Link href="/reservar" className="hero-button">
             Reservar turno

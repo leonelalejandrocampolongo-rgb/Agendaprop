@@ -117,6 +117,10 @@ export type Settings = {
   depositWhatsappNumber: string;
   /** Dirección del local, mostrada en el email de turno confirmado. */
   businessAddress: string;
+  /** Lema debajo del nombre del negocio, en el hero de la home. */
+  heroTagline: string;
+  /** Paleta de colores del sitio. */
+  colorTheme: "dorado" | "barberia" | "neutro" | "spa";
 };
 
 export type DbShape = {

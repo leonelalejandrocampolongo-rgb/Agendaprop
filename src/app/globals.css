@@ -4,16 +4,58 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 
-  /* Paleta de marca */
+  /* Paleta de marca (tema "dorado", por defecto) */
   --color-cream: #f8f4ee; /* fondo principal — marfil cálido */
   --color-nude: #ede1d8; /* fondo secundario — nude rosado suave */
   --color-champagne: #e3d2c2; /* secciones destacadas — beige champagne */
-  --color-gold: #c9a24a; /* dorado de marca — dorado champagne */
-  --color-gold-light: #d8b866; /* dorado más luminoso — dorado suave */
-  --color-gold-dark: #ad8a3e; /* hover de botones dorados (derivado) */
-  --color-cocoa: #4a3b35; /* texto principal — marrón cacao */
-  --color-taupe: #76665d; /* texto secundario — taupe */
-  --color-dustypink: #cfafa5; /* detalle rosado — rosa empolvado */
+  --color-gold: #c9a24a; /* color de marca — dorado champagne */
+  --color-gold-light: #d8b866; /* tono más luminoso del color de marca */
+  --color-gold-dark: #ad8a3e; /* hover de botones (derivado) */
+  --color-cocoa: #4a3b35; /* texto principal */
+  --color-taupe: #76665d; /* texto secundario */
+  --color-dustypink: #cfafa5; /* detalle de acento */
+}
+
+/*
+ * Paletas alternativas: cada negocio elige una desde Configuración
+ * (Settings.colorTheme). Redefinen los mismos tokens de arriba, así que
+ * cualquier clase de Tailwind que ya los use (bg-gold, text-cocoa, etc.)
+ * y el hero (que usa var(--color-*) directamente) cambian solos.
+ */
+:root[data-theme="barberia"] {
+  --color-cream: #f5f3ef;
+  --color-nude: #e8e3d9;
+  --color-champagne: #dcd3c0;
+  --color-gold: #8c6b3f;
+  --color-gold-light: #a6875a;
+  --color-gold-dark: #6e5230;
+  --color-cocoa: #23262b;
+  --color-taupe: #5b6169;
+  --color-dustypink: #7a8c7a;
+}
+
+:root[data-theme="neutro"] {
+  --color-cream: #f7f7f8;
+  --color-nude: #ecedef;
+  --color-champagne: #dfe1e5;
+  --color-gold: #3e5c76;
+  --color-gold-light: #557089;
+  --color-gold-dark: #2e4459;
+  --color-cocoa: #23262b;
+  --color-taupe: #5d6470;
+  --color-dustypink: #9aa5b1;
+}
+
+:root[data-theme="spa"] {
+  --color-cream: #f3f8f7;
+  --color-nude: #e4efed;
+  --color-champagne: #d6e8e4;
+  --color-gold: #4c9c8b;
+  --color-gold-light: #6bb6a6;
+  --color-gold-dark: #3a7a6c;
+  --color-cocoa: #2e3a3a;
+  --color-taupe: #5f7371;
+  --color-dustypink: #b7c9d9;
 }
 
 body {
@@ -36,11 +78,11 @@ body {
 
   background: radial-gradient(
     circle at 50% 45%,
-    rgba(255, 250, 242, 0.9),
-    rgba(232, 214, 194, 0.95)
+    color-mix(in srgb, var(--color-cream) 90%, white),
+    var(--color-champagne)
   );
 
-  color: #3d342f;
+  color: var(--color-cocoa);
 }
 
 /* Contenido central */
@@ -71,10 +113,10 @@ body {
 
   letter-spacing: -1.5px;
 
-  color: #3b302b;
+  color: var(--color-cocoa);
 }
 
-/* Línea dorada */
+/* Línea de acento */
 
 .hero-divider {
   width: 85px;
@@ -82,7 +124,7 @@ body {
 
   margin: 22px 0 20px;
 
-  background: #c89d43;
+  background: var(--color-gold);
 }
 
 /* Descripción */
@@ -96,7 +138,7 @@ body {
 
   letter-spacing: 2px;
 
-  color: #655952;
+  color: var(--color-taupe);
 }
 
 /* Botón */
@@ -110,7 +152,7 @@ body {
 
   border-radius: 999px;
 
-  background: #cda044;
+  background: var(--color-gold);
 
   color: white;
 
@@ -120,7 +162,7 @@ body {
 
   cursor: pointer;
 
-  box-shadow: 0 8px 20px rgba(130, 94, 35, 0.18);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--color-gold) 35%, transparent);
 
   transition:
     transform 0.2s ease,
@@ -137,9 +179,9 @@ body {
 .hero-button:hover {
   transform: translateY(-2px);
 
-  background: #bd9037;
+  background: var(--color-gold-dark);
 
-  box-shadow: 0 12px 25px rgba(130, 94, 35, 0.24);
+  box-shadow: 0 12px 25px color-mix(in srgb, var(--color-gold) 45%, transparent);
 }
 
 /* =========================================

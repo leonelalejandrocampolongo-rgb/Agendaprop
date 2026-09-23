@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getDb } from "@/lib/db";
 import "./globals.css";
+
+export const dynamic = "force-dynamic";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,10 +20,13 @@ export const metadata: Metadata = {
   description: "Reservá turnos de masajes, faciales y estética online.",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const db = await getDb();
+
   return (
     <html
       lang="es"
+      data-theme={db.settings.colorTheme}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-cream text-cocoa">

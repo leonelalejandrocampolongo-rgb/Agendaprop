@@ -66,6 +66,8 @@ export function makeDb(services: Service[] = [], bufferMinutes = 0): DbShape {
       depositAccountHolder: "Titular de Prueba",
       depositWhatsappNumber: "5491100000000",
       businessAddress: "Calle Falsa 123",
+      heroTagline: "Tu momento de bienestar empieza acá.",
+      colorTheme: "dorado",
     },
   };
 }

@@ -25,6 +25,8 @@ const updateSchema = z.object({
     .regex(/^\d+$/, "Solo números, sin '+' ni espacios")
     .optional(),
   businessAddress: z.string().trim().min(1).optional(),
+  heroTagline: z.string().trim().min(1).optional(),
+  colorTheme: z.enum(["dorado", "barberia", "neutro", "spa"]).optional(),
 });
 
 export async function PATCH(request: NextRequest) {

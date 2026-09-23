@@ -9,7 +9,16 @@ type Settings = {
   depositAccountHolder: string;
   depositWhatsappNumber: string;
   businessAddress: string;
+  heroTagline: string;
+  colorTheme: "dorado" | "barberia" | "neutro" | "spa";
 };
+
+const COLOR_THEMES: { id: Settings["colorTheme"]; label: string; swatches: string[] }[] = [
+  { id: "dorado", label: "Dorado cálido (spa)", swatches: ["#f8f4ee", "#c9a24a", "#4a3b35"] },
+  { id: "barberia", label: "Barbería clásica", swatches: ["#f5f3ef", "#8c6b3f", "#23262b"] },
+  { id: "neutro", label: "Profesional neutro", swatches: ["#f7f7f8", "#3e5c76", "#23262b"] },
+  { id: "spa", label: "Spa fresco", swatches: ["#f3f8f7", "#4c9c8b", "#2e3a3a"] },
+];
 
 export default function ConfiguracionPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -19,6 +28,8 @@ export default function ConfiguracionPage() {
     depositAccountHolder: "",
     depositWhatsappNumber: "",
     businessAddress: "",
+    heroTagline: "",
+    colorTheme: "dorado" as Settings["colorTheme"],
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,6 +46,8 @@ export default function ConfiguracionPage() {
           depositAccountHolder: data.settings.depositAccountHolder,
           depositWhatsappNumber: data.settings.depositWhatsappNumber,
           businessAddress: data.settings.businessAddress,
+          heroTagline: data.settings.heroTagline,
+          colorTheme: data.settings.colorTheme,
         });
       });
   }, []);
@@ -164,6 +177,60 @@ export default function ConfiguracionPage() {
           <p className="mt-1 text-xs text-taupe">
             Se incluye en el email de turno confirmado.
           </p>
+        </div>
+
+        <div>
+          <label htmlFor="cfg-tagline" className="block text-sm text-taupe mb-1">
+            Lema (debajo del nombre)
+          </label>
+          <input
+            id="cfg-tagline"
+            type="text"
+            required
+            value={form.heroTagline}
+            onChange={(e) => setForm({ ...form, heroTagline: e.target.value })}
+            className="w-full rounded-lg border border-taupe/30 px-3 py-2"
+          />
+          <p className="mt-1 text-xs text-taupe">
+            Se muestra debajo del nombre del negocio en la portada.
+          </p>
+        </div>
+
+        <div>
+          <span className="block text-sm text-taupe mb-2">Paleta de colores</span>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {COLOR_THEMES.map((theme) => (
+              <label
+                key={theme.id}
+                htmlFor={`cfg-theme-${theme.id}`}
+                className={`flex items-center gap-3 rounded-lg border px-3 py-2 cursor-pointer transition ${
+                  form.colorTheme === theme.id
+                    ? "border-gold ring-1 ring-gold"
+                    : "border-taupe/30"
+                }`}
+              >
+                <input
+                  id={`cfg-theme-${theme.id}`}
+                  type="radio"
+                  name="colorTheme"
+                  value={theme.id}
+                  checked={form.colorTheme === theme.id}
+                  onChange={() => setForm({ ...form, colorTheme: theme.id })}
+                  className="sr-only"
+                />
+                <span className="flex shrink-0 overflow-hidden rounded-full border border-taupe/20">
+                  {theme.swatches.map((color, i) => (
+                    <span
+                      key={i}
+                      className="h-6 w-6"
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                </span>
+                <span className="text-sm text-cocoa">{theme.label}</span>
+              </label>
+            ))}
+          </div>
         </div>
 
         {error && <p className="text-sm text-red-600">{error}</p>}

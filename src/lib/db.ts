@@ -26,6 +26,8 @@ const EMPTY_DB: DbShape = {
     depositAccountHolder: "Mariana Guadalupe Cabello",
     depositWhatsappNumber: "1568464060",
     businessAddress: "Evita 911, Timbre 1, Ciudad Madero",
+    heroTagline: "Tu momento de bienestar empieza acá.",
+    colorTheme: "dorado",
   },
 };
 

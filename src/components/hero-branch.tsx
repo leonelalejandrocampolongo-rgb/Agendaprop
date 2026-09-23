@@ -15,7 +15,7 @@ function leafPath(length: number): string {
   return `M0,0 C ${-w},${tip * 0.32} ${-w},${tip * 0.68} 0,${tip} C ${w},${tip * 0.68} ${w},${tip * 0.32} 0,0 Z`;
 }
 
-/** Rama decorativa de hojas, estilo line-art dorado. */
+/** Rama decorativa de hojas, estilo line-art, en el color de marca del negocio. */
 export function HeroBranch() {
   return (
     <svg
@@ -23,7 +23,7 @@ export function HeroBranch() {
       width="100%"
       height="100%"
       fill="none"
-      stroke="#c49a50"
+      stroke="var(--color-gold)"
       strokeWidth={1.4}
       strokeLinecap="round"
     >
