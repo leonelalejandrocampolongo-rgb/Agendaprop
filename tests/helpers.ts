@@ -18,6 +18,7 @@ export function makeService(overrides: Partial<Service> = {}): Service {
     isPack: false,
     packSessionsCount: null,
     hidden: false,
+    bufferMinutes: null,
     createdAt: now,
     updatedAt: now,
     ...overrides,

@@ -12,6 +12,7 @@ type Service = {
   active: boolean;
   isPack?: boolean;
   packSessionsCount?: number | null;
+  bufferMinutes?: number | null;
 };
 
 type FormState = {
@@ -21,6 +22,7 @@ type FormState = {
   price: string;
   isPack: boolean;
   packSessionsCount: string;
+  bufferMinutes: string;
 };
 
 const EMPTY_FORM: FormState = {
@@ -30,6 +32,7 @@ const EMPTY_FORM: FormState = {
   price: "",
   isPack: false,
   packSessionsCount: "4",
+  bufferMinutes: "",
 };
 
 export default function ServiciosPage() {
@@ -38,6 +41,7 @@ export default function ServiciosPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [generalBuffer, setGeneralBuffer] = useState<number | null>(null);
 
   async function load() {
     const res = await fetch("/api/admin/services");
@@ -47,7 +51,24 @@ export default function ServiciosPage() {
 
   useEffect(() => {
     load();
+    fetch("/api/admin/settings")
+      .then((r) => r.json())
+      .then((data) => setGeneralBuffer(data.settings?.bufferMinutes ?? 15));
   }, []);
+
+  /** "" = usar el margen general. */
+  const bufferOptions = [
+    {
+      value: "",
+      label:
+        generalBuffer === null
+          ? "Usar el margen general"
+          : `Usar el margen general (${generalBuffer} min)`,
+    },
+    { value: "0", label: "0 minutos" },
+    { value: "15", label: "15 minutos" },
+    { value: "30", label: "30 minutos" },
+  ];
 
   function startEdit(service: Service) {
     setEditingId(service.id);
@@ -58,6 +79,10 @@ export default function ServiciosPage() {
       price: String(service.priceCents / 100),
       isPack: service.isPack ?? false,
       packSessionsCount: String(service.packSessionsCount ?? 4),
+      bufferMinutes:
+        service.bufferMinutes === null || service.bufferMinutes === undefined
+          ? ""
+          : String(service.bufferMinutes),
     });
   }
 
@@ -93,6 +118,7 @@ export default function ServiciosPage() {
       priceCents: Math.round(priceNumber * 100),
       isPack: form.isPack,
       packSessionsCount: form.isPack ? Number(form.packSessionsCount) : null,
+      bufferMinutes: form.bufferMinutes === "" ? null : Number(form.bufferMinutes),
     };
 
     const res = await fetch(
@@ -184,6 +210,26 @@ export default function ServiciosPage() {
               className="w-full rounded-lg border border-taupe/30 px-3 py-2"
             />
           </div>
+          <div>
+            <label className="block text-sm text-taupe mb-1">
+              Margen entre turnos
+            </label>
+            <select
+              value={form.bufferMinutes}
+              onChange={(e) => setForm({ ...form, bufferMinutes: e.target.value })}
+              className="w-full rounded-lg border border-taupe/30 px-3 py-2"
+            >
+              {bufferOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-taupe">
+              Tiempo obligatorio antes/después de este servicio. El margen
+              general se configura en Horarios.
+            </p>
+          </div>
           <div className="sm:col-span-2">
             <label className="block text-sm text-taupe mb-1">
               Descripción (opcional)
@@ -273,6 +319,11 @@ export default function ServiciosPage() {
                   {service.isPack && (
                     <span className="text-xs rounded-full bg-champagne text-cocoa px-2 py-0.5">
                       Pack x{service.packSessionsCount}
+                    </span>
+                  )}
+                  {service.bufferMinutes != null && (
+                    <span className="text-xs rounded-full bg-champagne text-cocoa px-2 py-0.5">
+                      Margen: {service.bufferMinutes} min
                     </span>
                   )}
                 </p>

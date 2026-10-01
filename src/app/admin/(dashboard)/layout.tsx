@@ -5,6 +5,7 @@ import { LogoutButton } from "@/components/logout-button";
 const NAV = [
   { href: "/admin", label: "Resumen" },
   { href: "/admin/turnos", label: "Turnos" },
+  { href: "/admin/calendario", label: "Calendario" },
   { href: "/admin/packs", label: "Packs" },
   { href: "/admin/servicios", label: "Servicios" },
   { href: "/admin/horarios", label: "Horarios" },
@@ -31,7 +32,7 @@ export default async function DashboardLayout({
           </div>
           <LogoutButton />
         </div>
-        <nav className="mx-auto max-w-5xl px-6 flex gap-6 text-sm">
+        <nav className="mx-auto max-w-5xl px-6 flex gap-6 text-sm overflow-x-auto">
           {NAV.map((item) => (
             <Link
               key={item.href}

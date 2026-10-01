@@ -11,6 +11,13 @@ const createSchema = z.object({
   active: z.boolean().optional(),
   isPack: z.boolean().optional(),
   packSessionsCount: z.coerce.number().int().min(2).max(50).nullable().optional(),
+  bufferMinutes: z
+    .coerce.number().int()
+    .refine((v) => v === 0 || v === 15 || v === 30, {
+      message: "El margen debe ser 0, 15 o 30 minutos",
+    })
+    .nullable()
+    .optional(),
 });
 
 export async function GET(request: NextRequest) {
@@ -42,6 +49,7 @@ export async function POST(request: NextRequest) {
       isPack: parsed.data.isPack ?? false,
       packSessionsCount: parsed.data.isPack ? parsed.data.packSessionsCount ?? null : null,
       hidden: false,
+      bufferMinutes: parsed.data.bufferMinutes ?? null,
       createdAt: now,
       updatedAt: now,
     };

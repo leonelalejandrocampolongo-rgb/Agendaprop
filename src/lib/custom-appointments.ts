@@ -70,6 +70,7 @@ export function createCustomAppointment(
     isPack: input.isPack,
     packSessionsCount: input.isPack ? input.sessionsCount ?? null : null,
     hidden: true,
+    bufferMinutes: null,
     createdAt: now,
     updatedAt: now,
   };

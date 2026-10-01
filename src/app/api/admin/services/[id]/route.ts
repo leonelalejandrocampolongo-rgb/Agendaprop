@@ -16,6 +16,13 @@ const updateSchema = z.object({
   active: z.boolean().optional(),
   isPack: z.boolean().optional(),
   packSessionsCount: z.coerce.number().int().min(2).max(50).nullable().optional(),
+  bufferMinutes: z
+    .coerce.number().int()
+    .refine((v) => v === 0 || v === 15 || v === 30, {
+      message: "El margen debe ser 0, 15 o 30 minutos",
+    })
+    .nullable()
+    .optional(),
 });
 
 export async function PATCH(

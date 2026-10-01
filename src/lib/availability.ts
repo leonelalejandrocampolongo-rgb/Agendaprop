@@ -87,7 +87,9 @@ export function getAvailableSlots({
   // El margen se aplica a ambos lados de cada turno ya reservado, así queda
   // el mismo hueco obligatorio entre dos turnos sin importar cuál se agende
   // primero. No se aplica a los bloqueos manuales (son cierres explícitos).
-  const bufferMinutes = db.settings?.bufferMinutes ?? DEFAULT_BUFFER_MINUTES;
+  // Un servicio puede tener su propio margen; si no, se usa el general.
+  const bufferMinutes =
+    service.bufferMinutes ?? db.settings?.bufferMinutes ?? DEFAULT_BUFFER_MINUTES;
   const busyRanges = db.appointments
     .filter(
       (a) =>

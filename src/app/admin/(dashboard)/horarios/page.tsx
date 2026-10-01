@@ -225,11 +225,13 @@ export default function HorariosPage() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="font-medium text-cocoa">Margen entre turnos</h2>
+        <h2 className="font-medium text-cocoa">Margen general entre turnos</h2>
         <p className="text-sm text-taupe">
           Tiempo mínimo obligatorio entre el fin de un turno y el inicio del
           siguiente. No se muestra como un turno aparte, pero ese intervalo
-          queda bloqueado para nuevas reservas.
+          queda bloqueado para nuevas reservas. Se usa para todos los
+          servicios, salvo que uno tenga su propio margen configurado en
+          Servicios.
         </p>
         <select
           value={bufferMinutes ?? 15}

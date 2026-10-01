@@ -11,6 +11,8 @@ export type Service = {
   packSessionsCount: number | null;
   /** Si es true, no se muestra en el catálogo público ni se puede reservar desde la web (turno personalizado de un solo admin). */
   hidden: boolean;
+  /** Margen entre turnos propio de este servicio (0/15/30). Si es null, usa el margen general de Settings. */
+  bufferMinutes: number | null;
   createdAt: string;
   updatedAt: string;
 };
