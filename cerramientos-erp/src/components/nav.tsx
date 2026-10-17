@@ -9,6 +9,7 @@ const NAV = [
   { href: "/gastos", label: "Gastos" },
   { href: "/empleados", label: "Empleados" },
   { href: "/retiros", label: "Mis retiros" },
+  { href: "/importar", label: "Importar Excel" },
   { href: "/configuracion", label: "Configuración" },
 ];
 

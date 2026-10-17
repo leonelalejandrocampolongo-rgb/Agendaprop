@@ -12,7 +12,7 @@ export type User = {
 export type JobStatus = "presupuestado" | "en_curso" | "terminado" | "cancelado";
 
 /** Una obra / trabajo: lo que se le vende a un cliente. */
-export type Job = {
+export type Job = Imported & {
   id: string;
   clientName: string;
   clientPhone: string;
@@ -33,7 +33,7 @@ export type PaymentMethod = "efectivo" | "transferencia" | "cheque" | "tarjeta" 
 export type JobPaymentType = "sena" | "pago" | "saldo";
 
 /** Un cobro a un cliente (seña, pago parcial o saldo final). */
-export type JobPayment = {
+export type JobPayment = Imported & {
   id: string;
   jobId: string;
   date: string;
@@ -49,7 +49,7 @@ export type JobPayment = {
  * ejemplo el aluminio o el vidrio de ese trabajo) y cuenta para su
  * rentabilidad; si no, es un gasto general (alquiler, luz, combustible...).
  */
-export type Expense = {
+export type Expense = Imported & {
   id: string;
   date: string;
   category: string;
@@ -62,7 +62,7 @@ export type Expense = {
 
 export type PayFrequency = "mensual" | "quincenal" | "semanal" | "por_dia" | "por_obra";
 
-export type Employee = {
+export type Employee = Imported & {
   id: string;
   name: string;
   role: string;
@@ -84,7 +84,7 @@ export type EmployeePaymentType =
   | "otro";
 
 /** Plata que salió para un empleado. Cuenta como "gasto de empleados". */
-export type EmployeePayment = {
+export type EmployeePayment = Imported & {
   id: string;
   employeeId: string;
   date: string;
@@ -98,7 +98,7 @@ export type EmployeePayment = {
 };
 
 /** Plata que el dueño saca del negocio para él. No es un gasto del negocio. */
-export type OwnerWithdrawal = {
+export type OwnerWithdrawal = Imported & {
   id: string;
   date: string;
   amountCents: number;
@@ -106,6 +106,21 @@ export type OwnerWithdrawal = {
   notes: string;
   createdAt: string;
 };
+
+export type ImportBatch = {
+  id: string;
+  kind: string;
+  fileName: string;
+  /** Cuántos registros principales se crearon (obras, cobros, gastos...). */
+  count: number;
+  createdAt: string;
+};
+
+/**
+ * Los registros que vienen de una planilla guardan de qué importación
+ * salieron, para poder deshacerla entera si algo quedó mal.
+ */
+type Imported = { importBatchId?: string };
 
 export type Settings = {
   businessName: string;
@@ -122,5 +137,6 @@ export type DbShape = {
   employees: Employee[];
   employeePayments: EmployeePayment[];
   ownerWithdrawals: OwnerWithdrawal[];
+  importBatches: ImportBatch[];
   settings: Settings;
 };

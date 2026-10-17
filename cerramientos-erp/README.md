@@ -29,6 +29,15 @@ cuando se quiera.
 - **Mis retiros**: la plata que el dueño saca para él. No se cuenta como
   gasto: se resta de la ganancia para ver cuánto queda en el negocio.
 
+- **Importar Excel**: trae los datos de planillas viejas (.xlsx o .csv)
+  para no cargar todo a mano. Se elige qué tiene la planilla (obras, cobros,
+  gastos, pagos a empleados o retiros), la app adivina qué columna es cada
+  dato (se puede corregir), muestra una vista previa con los errores fila
+  por fila y recién ahí importa. Cada importación se puede **deshacer**.
+  Conviene importar primero las obras y después cobros y gastos, para que
+  se asocien a su obra por el nombre del cliente. Los `.xls` viejos hay que
+  guardarlos antes como `.xlsx`.
+
 Todo se cuenta "a caja": un ingreso cuenta el día que se cobró y un gasto
 el día que se pagó.
 
@@ -84,6 +93,8 @@ npm run build
 - `src/lib/finance.ts` — todos los cálculos de plata (resúmenes por
   período, rentabilidad por obra, saldos pendientes).
 - `src/lib/actions.ts` — Server Actions de alta/edición/baja.
+- `src/lib/import.ts` / `src/lib/import-apply.ts` — lectura de planillas
+  (fechas, montos, columnas) y cómo se guardan/deshacen las importaciones.
 - `src/lib/db.ts` — acceso al archivo JSON (lecturas/escrituras serializadas).
 
 ## Ideas para más adelante

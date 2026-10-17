@@ -32,6 +32,7 @@ export function emptyDb(): DbShape {
     employees: [],
     employeePayments: [],
     ownerWithdrawals: [],
+    importBatches: [],
     settings: {
       businessName: "Cerramientos de Aluminio",
       ownerName: "",

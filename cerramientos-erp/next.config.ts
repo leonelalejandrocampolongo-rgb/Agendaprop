@@ -10,6 +10,12 @@ const nextConfig: NextConfig = {
   // Permite abrir el servidor de desarrollo (npm run dev) desde el celular
   // u otros dispositivos de la misma red local. Solo afecta a `next dev`.
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.16.*.*"],
+  experimental: {
+    serverActions: {
+      // Las planillas viejas que se importan pueden tener miles de filas.
+      bodySizeLimit: "10mb",
+    },
+  },
 };
 
 export default nextConfig;

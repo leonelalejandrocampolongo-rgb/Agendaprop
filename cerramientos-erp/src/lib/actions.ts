@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 import { requireUser } from "@/lib/auth";
+import { applyImport, undoImport, type ImportSummary } from "@/lib/import-apply";
+import { isImportKind, parseRows } from "@/lib/import";
 import { mutateDb, newId } from "@/lib/db";
 import { parseMoneyToCents } from "@/lib/format";
 import type {
@@ -359,6 +362,56 @@ export async function changePassword(_prev: ActionResult, fd: FormData): Promise
         throw new InputError("La contraseña actual no es correcta");
       }
       stored.passwordHash = passwordHash;
+    });
+  });
+}
+
+// ---------- Importar planillas ----------
+
+const importPayload = z.object({
+  kind: z.string().refine(isImportKind),
+  fileName: z.string().max(300),
+  rows: z.array(z.array(z.union([z.string(), z.number(), z.boolean(), z.null()]))).max(20000),
+  mapping: z.record(z.string(), z.number().int().min(0).nullable()),
+  firstSheetRow: z.number().int().min(1),
+});
+
+export type ImportResult = { error?: string; summary?: ImportSummary };
+
+/**
+ * Recibe las filas crudas de la planilla y el mapeo de columnas, y las
+ * vuelve a interpretar acá (no se confía en lo que calculó el navegador).
+ */
+export async function importSpreadsheet(input: z.input<typeof importPayload>): Promise<ImportResult> {
+  await requireUser();
+  const parsed = importPayload.safeParse(input);
+  if (!parsed.success) return { error: "La planilla no se pudo leer. Probá de nuevo." };
+  const { fileName, rows, mapping, firstSheetRow } = parsed.data;
+  const kind = parsed.data.kind as Parameters<typeof parseRows>[0];
+
+  const parsedRows = parseRows(kind, rows, mapping, firstSheetRow);
+  if (!parsedRows.some((r) => !r.skipped && !r.error)) {
+    return { error: "No hay ninguna fila válida para importar." };
+  }
+
+  const batchId = newId();
+  const now = new Date().toISOString();
+  const summary = await mutateDb((db) => {
+    const result = applyImport(db, kind, parsedRows, { batchId, now });
+    db.importBatches.push({ id: batchId, kind, fileName, count: result.created, createdAt: now });
+    return result;
+  });
+  revalidatePath("/", "layout");
+  return { summary };
+}
+
+export async function undoImportBatch(batchId: string): Promise<ActionResult> {
+  return run(async () => {
+    await mutateDb((db) => {
+      if (!db.importBatches.some((b) => b.id === batchId)) {
+        throw new InputError("Esa importación ya se deshizo");
+      }
+      undoImport(db, batchId);
     });
   });
 }
