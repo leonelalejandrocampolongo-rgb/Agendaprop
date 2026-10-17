@@ -73,7 +73,23 @@ function demoData(now) {
   };
 }
 
+/**
+ * Para probar en una compu sin configurar nada: si no existe .env.local, lo
+ * crea con un AUTH_SECRET al azar (Auth.js no arranca sin uno).
+ */
+async function ensureEnvFile() {
+  const envPath = path.join(process.cwd(), ".env.local");
+  try {
+    await fs.access(envPath);
+  } catch {
+    const secret = crypto.randomBytes(32).toString("base64");
+    await fs.writeFile(envPath, `AUTH_SECRET="${secret}"\n`);
+    console.log("Se creó .env.local con una clave AUTH_SECRET nueva.");
+  }
+}
+
 async function main() {
+  await ensureEnvFile();
   let existing = null;
   try {
     existing = JSON.parse(await fs.readFile(DB_PATH, "utf-8"));
