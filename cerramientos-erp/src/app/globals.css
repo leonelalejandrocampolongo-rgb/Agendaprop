@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Paleta: gris aluminio + azul acero */
+  --color-surface: #f4f6f8; /* fondo general */
+  --color-line: #e2e6eb; /* bordes de tarjetas y tablas */
+  --color-steel: #5b6673; /* texto secundario */
+  --color-ink: #1d2733; /* texto principal */
+  --color-brand: #2f6690; /* azul acero, color de marca */
+  --color-brand-dark: #234e6f; /* hover */
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}

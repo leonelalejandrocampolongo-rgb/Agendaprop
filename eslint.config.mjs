@@ -19,6 +19,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // App independiente, con su propia config de ESLint.
+    "cerramientos-erp/**",
   ]),
 ]);
 
