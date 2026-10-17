@@ -1,11 +1,11 @@
 import { getDb } from "@/lib/db";
-import { addWithdrawal, deleteWithdrawal } from "@/lib/actions";
+import { deleteWithdrawal } from "@/lib/actions";
 import { inPeriod, summarizePeriod } from "@/lib/finance";
-import { formatDate, formatMoney, PAYMENT_METHOD_LABELS, todayIso } from "@/lib/format";
-import { ActionForm, DeleteButton, SubmitButton } from "@/components/action-form";
-import { paymentMethodOptions } from "@/components/options";
+import { formatDate, formatMoney, PAYMENT_METHOD_LABELS } from "@/lib/format";
+import { DeleteButton } from "@/components/action-form";
+import { WithdrawalForm } from "@/components/quick-forms";
 import { PeriodPicker, readPeriod } from "@/components/period-picker";
-import { Card, Empty, Field, inputClass, MoneyInput, PageHeader, Stat, signTone, tableClass, tdClass } from "@/components/ui";
+import { Card, Empty, PageHeader, Stat, signTone, tableClass, tdClass } from "@/components/ui";
 
 export default async function RetirosPage({ searchParams }: PageProps<"/retiros">) {
   const params = (await searchParams) as { anio?: string; mes?: string };
@@ -25,23 +25,7 @@ export default async function RetirosPage({ searchParams }: PageProps<"/retiros"
       />
 
       <Card title="Registrar un retiro">
-        <ActionForm action={addWithdrawal} className="flex flex-wrap items-end gap-3" successMessage="Retiro registrado.">
-          <Field label="Fecha" className="w-40">
-            <input type="date" name="date" required defaultValue={todayIso()} className={inputClass} />
-          </Field>
-          <Field label="Monto" className="w-40">
-            <MoneyInput name="amount" />
-          </Field>
-          <Field label="Forma" className="w-40">
-            <select name="method" className={inputClass}>
-              {paymentMethodOptions()}
-            </select>
-          </Field>
-          <Field label="Nota" className="flex-1 min-w-40">
-            <input name="notes" className={inputClass} />
-          </Field>
-          <SubmitButton>Registrar retiro</SubmitButton>
-        </ActionForm>
+        <WithdrawalForm />
       </Card>
 
       <PeriodPicker selected={selected} />

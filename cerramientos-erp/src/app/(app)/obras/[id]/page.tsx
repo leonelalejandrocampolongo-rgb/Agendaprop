@@ -108,27 +108,27 @@ export default async function ObraPage({ params }: PageProps<"/obras/[id]">) {
             </tbody>
           </table>
         )}
-        <ActionForm action={addJobPayment.bind(null, job.id)} className="flex flex-wrap items-end gap-3 pt-2 border-t border-line">
-          <Field label="Fecha" className="w-40">
+        <ActionForm action={addJobPayment.bind(null, job.id)} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-4 border-t border-line">
+          <Field label="Fecha">
             <input type="date" name="date" required defaultValue={today} className={inputClass} />
           </Field>
-          <Field label="Tipo" className="w-36">
+          <Field label="Tipo">
             <select name="type" defaultValue={payments.length === 0 ? "sena" : "pago"} className={inputClass}>
               {jobPaymentTypeOptions()}
             </select>
           </Field>
-          <Field label="Monto" className="w-36">
+          <Field label="Monto">
             <MoneyInput name="amount" />
           </Field>
-          <Field label="Forma de pago" className="w-40">
+          <Field label="Forma de pago">
             <select name="method" className={inputClass}>
               {paymentMethodOptions()}
             </select>
           </Field>
-          <Field label="Nota" className="flex-1 min-w-40">
+          <Field label="Nota">
             <input name="notes" className={inputClass} />
           </Field>
-          <SubmitButton>Registrar cobro</SubmitButton>
+          <div className="flex items-end"><SubmitButton>Registrar cobro</SubmitButton></div>
         </ActionForm>
       </Card>
 
@@ -154,30 +154,30 @@ export default async function ObraPage({ params }: PageProps<"/obras/[id]">) {
             </tbody>
           </table>
         )}
-        <ActionForm action={addExpense} className="flex flex-wrap items-end gap-3 pt-2 border-t border-line">
+        <ActionForm action={addExpense} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-4 border-t border-line">
           <input type="hidden" name="jobId" value={job.id} />
-          <Field label="Fecha" className="w-40">
+          <Field label="Fecha">
             <input type="date" name="date" required defaultValue={today} className={inputClass} />
           </Field>
-          <Field label="Categoría" className="w-52">
+          <Field label="Categoría">
             <select name="category" required className={inputClass}>
               {db.settings.expenseCategories.map((c) => (
                 <option key={c}>{c}</option>
               ))}
             </select>
           </Field>
-          <Field label="Detalle" className="flex-1 min-w-40">
+          <Field label="Detalle">
             <input name="description" placeholder="Ej: perfilería, DVH, cierres…" className={inputClass} />
           </Field>
-          <Field label="Monto" className="w-36">
+          <Field label="Monto">
             <MoneyInput name="amount" />
           </Field>
-          <Field label="Forma de pago" className="w-40">
+          <Field label="Forma de pago">
             <select name="method" className={inputClass}>
               {paymentMethodOptions()}
             </select>
           </Field>
-          <SubmitButton>Agregar gasto</SubmitButton>
+          <div className="flex items-end"><SubmitButton>Agregar gasto</SubmitButton></div>
         </ActionForm>
       </Card>
 
@@ -212,12 +212,12 @@ export default async function ObraPage({ params }: PageProps<"/obras/[id]">) {
             .
           </p>
         ) : (
-          <ActionForm action={addEmployeePayment} className="flex flex-wrap items-end gap-3 pt-2 border-t border-line">
+          <ActionForm action={addEmployeePayment} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 pt-4 border-t border-line">
             <input type="hidden" name="jobId" value={job.id} />
-            <Field label="Fecha" className="w-40">
+            <Field label="Fecha">
               <input type="date" name="date" required defaultValue={today} className={inputClass} />
             </Field>
-            <Field label="Empleado" className="w-48">
+            <Field label="Empleado">
               <select name="employeeId" required className={inputClass}>
                 {activeEmployees.map((e) => (
                   <option key={e.id} value={e.id}>
@@ -226,20 +226,20 @@ export default async function ObraPage({ params }: PageProps<"/obras/[id]">) {
                 ))}
               </select>
             </Field>
-            <Field label="Concepto" className="w-48">
+            <Field label="Concepto">
               <select name="type" className={inputClass}>
                 {employeePaymentTypeOptions()}
               </select>
             </Field>
-            <Field label="Monto" className="w-36">
+            <Field label="Monto">
               <MoneyInput name="amount" />
             </Field>
-            <Field label="Forma de pago" className="w-40">
+            <Field label="Forma de pago">
               <select name="method" className={inputClass}>
                 {paymentMethodOptions()}
               </select>
             </Field>
-            <SubmitButton>Registrar pago</SubmitButton>
+            <div className="flex items-end"><SubmitButton>Registrar pago</SubmitButton></div>
           </ActionForm>
         )}
       </Card>

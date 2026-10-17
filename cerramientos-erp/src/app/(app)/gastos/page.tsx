@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { getDb } from "@/lib/db";
-import { addExpense, deleteExpense } from "@/lib/actions";
+import { deleteExpense } from "@/lib/actions";
 import { inPeriod } from "@/lib/finance";
-import { formatDate, formatMoney, PAYMENT_METHOD_LABELS, todayIso } from "@/lib/format";
-import { ActionForm, DeleteButton, SubmitButton } from "@/components/action-form";
-import { jobOptions, paymentMethodOptions } from "@/components/options";
+import { formatDate, formatMoney, PAYMENT_METHOD_LABELS } from "@/lib/format";
+import { DeleteButton } from "@/components/action-form";
+import { ExpenseForm } from "@/components/quick-forms";
 import { PeriodPicker, readPeriod } from "@/components/period-picker";
-import { Card, Empty, Field, inputClass, MoneyInput, PageHeader, tableClass, tdClass, thClass } from "@/components/ui";
+import { Card, Empty, inputClass, PageHeader, tableClass, tdClass, thClass } from "@/components/ui";
 
 export default async function GastosPage({ searchParams }: PageProps<"/gastos">) {
   const params = (await searchParams) as { anio?: string; mes?: string; categoria?: string };
@@ -35,42 +35,7 @@ export default async function GastosPage({ searchParams }: PageProps<"/gastos">)
       />
 
       <Card title="Cargar un gasto">
-        <ActionForm action={addExpense} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" successMessage="Gasto guardado.">
-          <Field label="Fecha *">
-            <input type="date" name="date" required defaultValue={todayIso()} className={inputClass} />
-          </Field>
-          <Field label="Categoría *">
-            <select name="category" required className={inputClass}>
-              {db.settings.expenseCategories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Monto *">
-            <MoneyInput name="amount" />
-          </Field>
-          <Field label="Detalle" className="lg:col-span-2">
-            <input name="description" placeholder="Ej: 6 tiras de perfil, factura 0001-2345…" className={inputClass} />
-          </Field>
-          <Field label="Forma de pago">
-            <select name="method" className={inputClass}>
-              {paymentMethodOptions()}
-            </select>
-          </Field>
-          <Field
-            label="¿Es para una obra?"
-            className="lg:col-span-2"
-            hint="Si el material es para una obra puntual, elegila: así sabés cuánto te dejó ese trabajo."
-          >
-            <select name="jobId" defaultValue="" className={inputClass}>
-              <option value="">No, gasto general del negocio</option>
-              {jobOptions(db.jobs)}
-            </select>
-          </Field>
-          <div className="flex items-end">
-            <SubmitButton>Guardar gasto</SubmitButton>
-          </div>
-        </ActionForm>
+        <ExpenseForm categories={db.settings.expenseCategories} jobs={db.jobs} />
       </Card>
 
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -104,7 +69,26 @@ export default async function GastosPage({ searchParams }: PageProps<"/gastos">)
         {expenses.length === 0 ? (
           <Empty>No hay gastos en este período.</Empty>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <ul className="sm:hidden divide-y divide-line">
+            {expenses.map((e) => (
+              <li key={e.id} className="flex items-start justify-between gap-3 py-3">
+                <div className="min-w-0">
+                  <p className="font-medium text-ink">{e.category}</p>
+                  <p className="text-sm text-steel">
+                    {formatDate(e.date)}
+                    {e.description && ` · ${e.description}`}
+                    {jobName(e.jobId) && ` · obra ${jobName(e.jobId)}`}
+                  </p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className="font-medium tabular-nums">{formatMoney(e.amountCents)}</p>
+                  <DeleteButton action={deleteExpense.bind(null, e.id)} confirm="¿Borrar este gasto?" />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="hidden sm:block overflow-x-auto">
             <table className={tableClass}>
               <thead>
                 <tr>
@@ -143,6 +127,7 @@ export default async function GastosPage({ searchParams }: PageProps<"/gastos">)
               </tbody>
             </table>
           </div>
+          </>
         )}
       </Card>
     </div>

@@ -152,7 +152,17 @@ export async function deleteJob(jobId: string): Promise<ActionResult> {
 }
 
 export async function addJobPayment(jobId: string, _prev: ActionResult, fd: FormData): Promise<ActionResult> {
+  return saveJobPayment(jobId, fd);
+}
+
+/** Igual que addJobPayment, pero la obra se elige en el formulario (pantalla "Cargar"). */
+export async function addJobPaymentPickingJob(_prev: ActionResult, fd: FormData): Promise<ActionResult> {
+  return saveJobPayment(text(fd, "jobId"), fd);
+}
+
+async function saveJobPayment(jobId: string, fd: FormData): Promise<ActionResult> {
   return run(async () => {
+    if (!jobId) throw new InputError("Elegí la obra");
     const payment = {
       id: newId(),
       jobId,

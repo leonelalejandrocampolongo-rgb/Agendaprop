@@ -32,7 +32,12 @@ export default function LoginPage() {
 
   return (
     <main className="flex-1 flex items-center justify-center px-6 py-16">
-      <div className="w-full max-w-sm rounded-xl border border-line bg-white p-8">
+      <div className="w-full max-w-sm rounded-2xl border border-line bg-white p-8 shadow-sm">
+        <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-brand text-white">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden="true">
+            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6" />
+          </svg>
+        </span>
         <h1 className="text-xl font-semibold text-ink text-center">Gestión del negocio</h1>
         <p className="mt-1 text-sm text-steel text-center">Ingresá para continuar</p>
         <form onSubmit={handleSubmit} className="mt-8 space-y-4">

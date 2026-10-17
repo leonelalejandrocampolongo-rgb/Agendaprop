@@ -1,4 +1,5 @@
-import { inputClass } from "@/components/ui";
+import Link from "next/link";
+import { Icon } from "@/components/icons";
 import { MONTH_NAMES, todayIso } from "@/lib/format";
 import { monthPeriod, yearPeriod, type Period } from "@/lib/finance";
 
@@ -24,7 +25,18 @@ export function readPeriod(params: { anio?: string; mes?: string }): SelectedPer
   };
 }
 
-/** Selector de mes/año. Es un form GET: funciona sin JavaScript. */
+function href(year: number, month: number, extra?: Record<string, string | undefined>): string {
+  const params = new URLSearchParams();
+  for (const [k, v] of Object.entries(extra ?? {})) if (v) params.set(k, v);
+  params.set("anio", String(year));
+  params.set("mes", String(month));
+  return `?${params.toString()}`;
+}
+
+const arrowClass =
+  "flex h-11 w-11 items-center justify-center rounded-lg border border-line bg-white text-ink shadow-sm hover:border-brand hover:text-brand-dark";
+
+/** Selector de período con flechas ← →. Son links: funciona sin JavaScript. */
 export function PeriodPicker({
   selected,
   extra,
@@ -33,40 +45,36 @@ export function PeriodPicker({
   /** Otros filtros de la página a conservar al cambiar el período. */
   extra?: Record<string, string | undefined>;
 }) {
-  const currentYear = Number(todayIso().slice(0, 4));
-  const years = Array.from({ length: 6 }, (_, i) => currentYear - 4 + i);
+  const [todayYear, todayMonth] = todayIso().split("-").map(Number);
+  const { year, month } = selected;
+  const prev = month ? (month === 1 ? href(year - 1, 12, extra) : href(year, month - 1, extra)) : href(year - 1, 0, extra);
+  const next = month ? (month === 12 ? href(year + 1, 1, extra) : href(year, month + 1, extra)) : href(year + 1, 0, extra);
+  const isCurrent = year === todayYear && (month === null || month === todayMonth);
+
   return (
-    <form method="get" className="flex flex-wrap items-end gap-2">
-      {Object.entries(extra ?? {}).map(([k, v]) =>
-        v ? <input key={k} type="hidden" name={k} value={v} /> : null,
-      )}
-      <label>
-        <span className="block text-xs text-steel mb-1">Mes</span>
-        <select name="mes" defaultValue={selected.month ?? 0} className={inputClass}>
-          {MONTH_NAMES.map((name, i) => (
-            <option key={name} value={i + 1}>
-              {name}
-            </option>
-          ))}
-          <option value={0}>Año completo</option>
-        </select>
-      </label>
-      <label>
-        <span className="block text-xs text-steel mb-1">Año</span>
-        <select name="anio" defaultValue={selected.year} className={inputClass}>
-          {years.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-      </label>
-      <button
-        type="submit"
-        className="rounded-lg border border-steel/40 bg-white px-4 py-2 text-sm text-ink hover:border-brand"
-      >
-        Ver
-      </button>
-    </form>
+    <div className="flex flex-wrap items-center gap-2">
+      <Link href={prev} className={arrowClass} aria-label="Período anterior">
+        <Icon name="left" />
+      </Link>
+      <p className="min-w-40 text-center text-lg font-semibold text-ink">
+        {month ? `${MONTH_NAMES[month - 1]} ${year}` : `Año ${year}`}
+      </p>
+      <Link href={next} className={arrowClass} aria-label="Período siguiente">
+        <Icon name="right" />
+      </Link>
+      <div className="flex gap-2 text-sm">
+        {!isCurrent && (
+          <Link href={href(todayYear, month ? todayMonth : 0, extra)} className="rounded-lg px-3 py-2 text-brand-dark hover:bg-brand/10">
+            {month ? "Este mes" : "Este año"}
+          </Link>
+        )}
+        <Link
+          href={month ? href(year, 0, extra) : href(year, year === todayYear ? todayMonth : 1, extra)}
+          className="rounded-lg px-3 py-2 text-brand-dark hover:bg-brand/10"
+        >
+          {month ? "Ver el año completo" : "Ver por mes"}
+        </Link>
+      </div>
+    </div>
   );
 }

@@ -124,3 +124,13 @@ test("parseMoneyToCents accepts the usual ways of typing pesos", () => {
   assert.equal(parseMoneyToCents("abc"), null);
   assert.equal(parseMoneyToCents("-500"), null);
 });
+
+test("formatTyping adds thousands dots while typing, and parses back", async () => {
+  const { formatTyping } = await import("../src/components/money-input");
+  assert.equal(formatTyping("1500000"), "1.500.000");
+  assert.equal(formatTyping("1.500.000,505"), "1.500.000,50");
+  assert.equal(formatTyping("$ 2500"), "2.500");
+  assert.equal(formatTyping("007"), "7");
+  assert.equal(parseMoneyToCents(formatTyping("1500000,5")), 150_000_050);
+  assert.equal(parseMoneyToCents(formatTyping("150000")), 15_000_000);
+});

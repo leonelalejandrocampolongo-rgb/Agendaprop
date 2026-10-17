@@ -55,12 +55,18 @@ export function ActionForm({
     >
       <PendingContext value={pending}>{children}</PendingContext>
       {state?.error && (
-        <p role="alert" className="text-sm text-red-700 basis-full">
+        <p role="alert" className="col-span-full basis-full rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
           {state.error}
         </p>
       )}
       {state?.ok && successMessage && (
-        <p ref={successRef} tabIndex={-1} className="text-sm text-emerald-700 basis-full outline-none">
+        <p
+          ref={successRef}
+          tabIndex={-1}
+          role="status"
+          className="col-span-full basis-full rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800 outline-none"
+        >
+          {"✓ "}
           {successMessage}
         </p>
       )}
@@ -78,10 +84,10 @@ export function SubmitButton({
   const pending = useContext(PendingContext);
   const styles = {
     primary:
-      "rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white hover:bg-brand-dark disabled:opacity-60",
+      "w-full sm:w-auto rounded-lg bg-brand px-5 py-2.5 text-base sm:text-sm font-medium text-white shadow-sm hover:bg-brand-dark disabled:opacity-60",
     danger:
-      "rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-60",
-    "link-danger": "text-xs text-red-700 hover:underline disabled:opacity-60",
+      "w-full sm:w-auto rounded-lg border border-red-300 bg-white px-5 py-2.5 text-base sm:text-sm font-medium text-red-700 hover:bg-red-50 disabled:opacity-60",
+    "link-danger": "-mx-2 rounded px-2 py-1 text-sm text-red-700 hover:bg-red-50 disabled:opacity-60",
   };
   return (
     <button type="submit" disabled={pending} className={styles[variant]}>
