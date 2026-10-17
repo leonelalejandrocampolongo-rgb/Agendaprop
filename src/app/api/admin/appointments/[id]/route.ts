@@ -18,6 +18,8 @@ const updateSchema = z.object({
   startTime: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   /** "Eliminado visual": true archiva el turno (solo si está CANCELLED), false lo restaura. */
   archived: z.boolean().optional(),
+  /** Monto abonado (seña o pago total), informativo. null lo borra. */
+  depositPaidCents: z.coerce.number().int().min(0).nullable().optional(),
 });
 
 export async function PATCH(
@@ -71,6 +73,7 @@ export async function PATCH(
       statusChanged = data.status !== undefined && data.status !== existing.status;
       if (data.status !== undefined) existing.status = data.status;
       if (data.notes !== undefined) existing.notes = data.notes;
+      if (data.depositPaidCents !== undefined) existing.depositPaidCents = data.depositPaidCents;
 
       if (data.archived === true) {
         if (existing.status !== "CANCELLED") throw new Error("NOT_CANCELLED");

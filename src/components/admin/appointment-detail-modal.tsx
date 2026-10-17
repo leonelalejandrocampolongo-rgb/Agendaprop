@@ -19,6 +19,11 @@ export function AppointmentDetailModal({ appointment, onClose, onChanged }: Prop
   const [rescheduling, setRescheduling] = useState(false);
   const [date, setDate] = useState(appointment.date);
   const [startTime, setStartTime] = useState(appointment.startTime);
+  const [payingDeposit, setPayingDeposit] = useState(false);
+  const [depositAmount, setDepositAmount] = useState(
+    appointment.depositPaidCents != null ? String(appointment.depositPaidCents / 100) : "",
+  );
+  const [depositError, setDepositError] = useState<string | null>(null);
 
   async function patch(body: Record<string, unknown>) {
     setSaving(true);
@@ -45,6 +50,22 @@ export function AppointmentDetailModal({ appointment, onClose, onChanged }: Prop
   async function saveReschedule() {
     const ok = await patch({ date, startTime });
     if (ok) setRescheduling(false);
+  }
+
+  async function saveDeposit() {
+    const amountNumber = Number(depositAmount.replace(",", "."));
+    if (!depositAmount.trim() || !Number.isFinite(amountNumber) || amountNumber < 0) {
+      setDepositError("Ingresá un monto válido.");
+      return;
+    }
+    setDepositError(null);
+    const ok = await patch({ depositPaidCents: Math.round(amountNumber * 100) });
+    if (ok) setPayingDeposit(false);
+  }
+
+  async function clearDeposit() {
+    const ok = await patch({ depositPaidCents: null });
+    if (ok) setPayingDeposit(false);
   }
 
   function whatsappMessage(): string {
@@ -126,6 +147,45 @@ export function AppointmentDetailModal({ appointment, onClose, onChanged }: Prop
               </button>
             </div>
           </div>
+        ) : payingDeposit ? (
+          <div className="space-y-2 rounded-lg bg-nude/50 p-3">
+            <div>
+              <label className="block text-xs text-taupe mb-1">Monto abonado ($)</label>
+              <input
+                type="text"
+                inputMode="decimal"
+                autoFocus
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm w-32"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={saveDeposit}
+                disabled={saving}
+                className="rounded-full bg-gold px-4 py-1.5 text-sm font-medium text-white hover:bg-gold-dark disabled:opacity-60"
+              >
+                Guardar
+              </button>
+              {appointment.depositPaidCents != null && (
+                <button
+                  onClick={clearDeposit}
+                  disabled={saving}
+                  className="rounded-full border border-red-300 px-4 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                >
+                  Quitar
+                </button>
+              )}
+              <button
+                onClick={() => setPayingDeposit(false)}
+                className="rounded-full border border-taupe/30 px-4 py-1.5 text-sm text-taupe"
+              >
+                Cancelar
+              </button>
+            </div>
+            {depositError && <p className="text-sm text-red-600">{depositError}</p>}
+          </div>
         ) : (
           !appointment.archivedAt && (
             <div className="flex flex-wrap items-center gap-2">
@@ -146,6 +206,13 @@ export function AppointmentDetailModal({ appointment, onClose, onChanged }: Prop
                 className="rounded-full border border-taupe/30 px-3 py-1.5 text-sm text-taupe hover:border-gold-light disabled:opacity-50"
               >
                 Reprogramar
+              </button>
+              <button
+                onClick={() => setPayingDeposit(true)}
+                disabled={saving}
+                className="rounded-full border border-taupe/30 px-3 py-1.5 text-sm text-taupe hover:border-gold-light disabled:opacity-50"
+              >
+                {appointment.depositPaidCents != null ? "Editar pago" : "Registrar pago"}
               </button>
               <a
                 href={buildWhatsAppLink(appointment.clientPhone, whatsappMessage())}

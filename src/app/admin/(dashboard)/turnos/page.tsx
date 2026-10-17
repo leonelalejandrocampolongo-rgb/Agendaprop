@@ -47,6 +47,9 @@ export default function TurnosPage() {
   const [rescheduleDate, setRescheduleDate] = useState("");
   const [rescheduleTime, setRescheduleTime] = useState("");
   const [rescheduleError, setRescheduleError] = useState<string | null>(null);
+  const [payingId, setPayingId] = useState<string | null>(null);
+  const [depositAmount, setDepositAmount] = useState("");
+  const [depositError, setDepositError] = useState<string | null>(null);
 
   async function load() {
     const params = new URLSearchParams();
@@ -123,6 +126,46 @@ export default function TurnosPage() {
       return;
     }
     setReschedulingId(null);
+    await load();
+  }
+
+  function startPayment(a: Appointment) {
+    setPayingId(a.id);
+    setDepositAmount(a.depositPaidCents != null ? String(a.depositPaidCents / 100) : "");
+    setDepositError(null);
+  }
+
+  async function savePayment(id: string) {
+    const amountNumber = Number(depositAmount.replace(",", "."));
+    if (!depositAmount.trim() || !Number.isFinite(amountNumber) || amountNumber < 0) {
+      setDepositError("Ingresá un monto válido.");
+      return;
+    }
+    setUpdatingId(id);
+    setDepositError(null);
+    const res = await fetch(`/api/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ depositPaidCents: Math.round(amountNumber * 100) }),
+    });
+    setUpdatingId(null);
+    if (!res.ok) {
+      setDepositError("No se pudo guardar el pago.");
+      return;
+    }
+    setPayingId(null);
+    await load();
+  }
+
+  async function clearPayment(id: string) {
+    setUpdatingId(id);
+    await fetch(`/api/admin/appointments/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ depositPaidCents: null }),
+    });
+    setUpdatingId(null);
+    setPayingId(null);
     await load();
   }
 
@@ -247,6 +290,13 @@ export default function TurnosPage() {
                       >
                         Reprogramar
                       </button>
+                      <button
+                        onClick={() => startPayment(a)}
+                        disabled={updatingId === a.id}
+                        className="rounded-full border border-taupe/30 px-3 py-1.5 text-sm text-taupe hover:border-gold-light disabled:opacity-50"
+                      >
+                        {a.depositPaidCents != null ? "Editar pago" : "Registrar pago"}
+                      </button>
                       <a
                         href={buildWhatsAppLink(a.clientPhone, whatsappMessageFor(a))}
                         target="_blank"
@@ -304,6 +354,47 @@ export default function TurnosPage() {
                   </button>
                   {rescheduleError && (
                     <p className="w-full text-sm text-red-600">{rescheduleError}</p>
+                  )}
+                </div>
+              )}
+
+              {payingId === a.id && (
+                <div className="flex flex-wrap items-end gap-2 rounded-lg bg-nude/50 p-3">
+                  <div>
+                    <label className="block text-xs text-taupe mb-1">Monto abonado ($)</label>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      autoFocus
+                      value={depositAmount}
+                      onChange={(e) => setDepositAmount(e.target.value)}
+                      className="rounded-lg border border-taupe/30 px-2 py-1.5 text-sm w-32"
+                    />
+                  </div>
+                  <button
+                    onClick={() => savePayment(a.id)}
+                    disabled={updatingId === a.id}
+                    className="rounded-full bg-gold px-4 py-1.5 text-sm font-medium text-white hover:bg-gold-dark disabled:opacity-60"
+                  >
+                    Guardar
+                  </button>
+                  {a.depositPaidCents != null && (
+                    <button
+                      onClick={() => clearPayment(a.id)}
+                      disabled={updatingId === a.id}
+                      className="rounded-full border border-red-300 px-4 py-1.5 text-sm text-red-600 hover:bg-red-50 disabled:opacity-50"
+                    >
+                      Quitar
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setPayingId(null)}
+                    className="rounded-full border border-taupe/30 px-4 py-1.5 text-sm text-taupe"
+                  >
+                    Cancelar
+                  </button>
+                  {depositError && (
+                    <p className="w-full text-sm text-red-600">{depositError}</p>
                   )}
                 </div>
               )}
