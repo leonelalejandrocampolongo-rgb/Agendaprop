@@ -54,8 +54,7 @@ el día que se pagó.
 ```bash
 cd cerramientos-erp
 npm install
-cp .env.example .env.local   # y poné un AUTH_SECRET propio
-npm run seed                 # crea el usuario para entrar
+npm run seed   # crea el usuario para entrar (y .env.local si no existe)
 npm run dev
 ```
 
@@ -73,6 +72,9 @@ Para ver la app con datos de ejemplo antes de cargar los reales:
 ```bash
 rm -f data/db.json && npm run seed -- --demo
 ```
+
+Para probar el importador hay una planilla de ejemplo en
+`ejemplos/planilla-ejemplo.xlsx` (hojas «Obras» y «Gastos»).
 
 ## Producción (Railway u otro hosting)
 
