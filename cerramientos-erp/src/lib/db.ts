@@ -95,11 +95,54 @@ async function readDb(): Promise<DbShape> {
   }
 }
 
+// En Windows, reemplazar un archivo falla con EPERM/EACCES/EBUSY si en ese
+// momento otro programa lo tiene abierto (el antivirus, OneDrive, el
+// indexador de búsqueda, u otro proceso de Next leyéndolo). Dura unos
+// milisegundos, así que se reintenta antes de rendirse.
+const TRANSIENT_FS_ERRORS = new Set(["EPERM", "EACCES", "EBUSY"]);
+const RETRY_DELAYS_MS = [10, 25, 50, 100, 150, 250, 400, 600];
+
+type ReplaceOps = Pick<typeof fs, "rename" | "copyFile" | "unlink">;
+
+function isTransient(err: unknown): boolean {
+  return TRANSIENT_FS_ERRORS.has((err as NodeJS.ErrnoException).code ?? "");
+}
+
+async function retrying(task: () => Promise<void>, sleep: (ms: number) => Promise<void>): Promise<void> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await task();
+    } catch (err) {
+      if (!isTransient(err) || attempt >= RETRY_DELAYS_MS.length) throw err;
+      await sleep(RETRY_DELAYS_MS[attempt]);
+    }
+  }
+}
+
+/**
+ * Reemplaza `dest` por `tmp`. Primero con rename (atómico); si Windows lo
+ * sigue bloqueando, copia el contenido encima y borra el temporal.
+ */
+export async function replaceFile(
+  tmp: string,
+  dest: string,
+  ops: ReplaceOps = fs,
+  sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms)),
+): Promise<void> {
+  try {
+    await retrying(() => ops.rename(tmp, dest), sleep);
+  } catch (err) {
+    if (!isTransient(err)) throw err;
+    await retrying(() => ops.copyFile(tmp, dest), sleep);
+    await ops.unlink(tmp).catch(() => {});
+  }
+}
+
 async function writeDb(data: DbShape): Promise<void> {
   const tmpPath = `${DB_PATH}.tmp`;
   await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
   await fs.writeFile(tmpPath, JSON.stringify(data, null, 2));
-  await fs.rename(tmpPath, DB_PATH);
+  await replaceFile(tmpPath, DB_PATH);
 }
 
 /** Lee toda la base. Se puede llamar en paralelo sin problema. */
